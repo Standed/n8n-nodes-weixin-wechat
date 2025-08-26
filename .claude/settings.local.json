@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(npm install)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint)",
+      "Bash(n8n:*)",
+      "Bash(npm pack:*)",
+      "Bash(npm install:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker cp:*)",
+      "Bash(docker exec:*)",
+      "Bash(docker restart:*)",
+      "Bash(docker logs:*)",
+      "Bash(cp:*)",
+      "Bash(node:*)",
+      "WebFetch(domain:wechaty.js.org)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

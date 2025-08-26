@@ -1,0 +1,46 @@
+{
+  "name": "n8n-nodes-wechat-personal",
+  "version": "0.1.0",
+  "description": "Send WeChat (personal account) messages from n8n via a local Wechaty bot service.",
+  "author": "XYS",
+  "license": "MIT",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n-nodes",
+    "wechat",
+    "wechaty",
+    "padlocal"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "lintfix": "eslint . --ext .ts --fix",
+    "dev": "tsc --watch",
+    "prepack": "npm run build"
+  },
+  "files": [
+    "dist/**/*",
+    "credentials/**/*",
+    "nodes/**/*",
+    "icons/**/*"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.5.4",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.57.0"
+  },
+  "peerDependencies": {
+    "n8n-workflow": ">=1.0.0"
+  },
+  "n8n": {
+    "nodes": [
+      "dist/nodes/WechatPersonalSend.node.js"
+    ],
+    "credentials": [
+      "dist/credentials/WechatPersonalApi.credentials.js"
+    ]
+  }
+}

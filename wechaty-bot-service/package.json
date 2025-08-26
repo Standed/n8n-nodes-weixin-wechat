@@ -1,0 +1,32 @@
+{
+  "name": "wechaty-bot-service",
+  "version": "1.0.0",
+  "description": "WeChat Bot service for n8n integration using Wechaty + PadLocal",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "docker:build": "docker build -t wechaty-bot-service .",
+    "docker:run": "docker run -d -p 3000:3000 --name wechaty-bot wechaty-bot-service"
+  },
+  "keywords": [
+    "wechaty",
+    "wechat",
+    "bot",
+    "n8n",
+    "padlocal"
+  ],
+  "author": "XYS",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "wechaty": "^1.20.2",
+    "wechaty-puppet-padlocal": "^1.13.0",
+    "file-box": "^1.4.15",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
