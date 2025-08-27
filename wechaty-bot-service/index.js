@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const { WechatyBuilder } = require('wechaty');
-const { PuppetPadlocal } = require('wechaty-puppet-padlocal');
+// 对于较新版本的 Wechaty，直接使用默认 puppet
+// const PuppetWechat = require('wechaty-puppet-wechat');
 const { FileBox } = require('file-box');
 require('dotenv').config();
 
@@ -12,7 +13,7 @@ app.use(express.json());
 // 配置
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.API_KEY || 'wechaty-n8n-key-2024';
-const PADLOCAL_TOKEN = process.env.PADLOCAL_TOKEN || '';
+// 使用 wechaty-puppet-wechat，无需 token
 
 // Bot 状态
 let bot = null;
@@ -44,28 +45,19 @@ const authenticateApiKey = (req, res, next) => {
 
 // 初始化 Wechaty Bot
 async function initBot() {
-  console.log('🤖 初始化 Wechaty Bot...');
+  console.log('🤖 初始化 Wechaty Bot (Web WeChat)...');
   
-  if (!PADLOCAL_TOKEN) {
-    console.error('❌ 错误: 需要 PADLOCAL_TOKEN 环境变量');
-    console.log('请在 .env 文件中设置: PADLOCAL_TOKEN=你的PadLocal令牌');
-    console.log('获取令牌: https://wechaty.js.org/docs/puppet-providers/padlocal');
-    return;
-  }
-
-  const puppet = new PuppetPadlocal({
-    token: PADLOCAL_TOKEN,
-  });
-
+  // 使用默认的 web 协议（不需要额外配置）
   bot = WechatyBuilder.build({
     name: 'n8n-wechat-bot',
-    puppet,
+    // 默认会使用 wechaty-puppet-wechat
   });
 
   bot
     .on('scan', (qrcode, status) => {
       console.log('📱 扫码登录状态:', status);
       console.log('🔗 扫码链接: https://wechaty.js.org/qrcode/' + encodeURIComponent(qrcode));
+      console.log('💡 请用微信扫描上方二维码登录');
     })
     .on('login', async (user) => {
       console.log('✅ 登录成功:', user.name());
@@ -411,7 +403,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('');
   console.log('📖 配置信息:');
   console.log(`   API Key: ${API_KEY}`);
-  console.log(`   PadLocal Token: ${PADLOCAL_TOKEN ? '已配置' : '❌ 未配置'}`);
+  console.log(`   Puppet: wechaty-puppet-wechat (Web WeChat)`);
   console.log('');
   console.log('🔧 可用接口:');
   console.log('   GET  /health      - 健康检查');
@@ -421,15 +413,8 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log('   POST /send/file   - 发送文件');
   console.log('   GET  /bot/info    - Bot信息');
   console.log('');
-  
-  if (!PADLOCAL_TOKEN) {
-    console.log('⚠️  警告: 未配置 PADLOCAL_TOKEN');
-    console.log('   请在 .env 文件中设置 PadLocal 令牌');
-    console.log('   获取令牌: https://wechaty.js.org/docs/puppet-providers/padlocal');
-  } else {
-    console.log('🤖 正在初始化 Wechaty Bot...');
-    initBot();
-  }
+  console.log('🤖 正在初始化 Wechaty Bot...');
+  initBot();
 });
 
 // 优雅退出

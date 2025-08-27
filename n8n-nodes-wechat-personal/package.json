@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-wechat-personal",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Send WeChat (personal account) messages from n8n via a local Wechaty bot service.",
   "author": "XYS",
   "license": "MIT",
@@ -25,12 +25,12 @@
     "nodes/**/*",
     "icons/**/*"
   ],
-  "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.5.4",
+    "@types/node": "^24.3.0",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "typescript": "^5.5.4"
   },
   "peerDependencies": {
     "n8n-workflow": ">=1.0.0"

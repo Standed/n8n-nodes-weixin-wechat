@@ -7,6 +7,8 @@ import {
 	IHttpRequestMethods,
 	NodeConnectionType,
 } from 'n8n-workflow';
+import { readFileSync, existsSync } from 'fs';
+import { basename } from 'path';
 
 async function requestWithAuth(
 	thisArg: IExecuteFunctions,
@@ -46,12 +48,12 @@ async function requestWithAuth(
 
 export class WechatPersonalSend implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'WeChat (Personal) Send',
+		displayName: 'WeChat Send',
 		name: 'wechatPersonalSend',
 		icon: 'file:wechat.svg',
-		group: ['transform'],
-		version: 1,
-		description: 'Send text or file to WeChat personal contact/room/filehelper via local Wechaty bot service',
+		group: ['communication'],
+		version: 3,
+		description: 'Send messages and files via WeChat (Personal > Enterprise > Official Account)',
 		defaults: {
 			name: 'WeChat Send',
 		},
@@ -65,97 +67,199 @@ export class WechatPersonalSend implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Target Type',
-				name: 'toType',
+				displayName: 'WeChat Service',
+				name: 'service',
+				type: 'options',
+				default: 'enterprise-wechat-bot',
+				options: [
+					{
+						name: '🏢 企业微信机器人 (推荐)',
+						value: 'enterprise-wechat-bot',
+						description: '发送到企业微信群，无需配置IP白名单，最稳定',
+					},
+					{
+						name: '🙋‍♂️ 个人微信 (WeChatFerry)',
+						value: 'personal-wechat',
+						description: '基于WeChatFerry的个人微信，需要PC微信客户端',
+					},
+					{
+						name: '📢 微信公众号',
+						value: 'wechat-official-account',
+						description: '通过公众号发送模板消息或客服消息',
+					},
+					{
+						name: '📱 Server酱推送',
+						value: 'server-chan',
+						description: '通过Server酱推送到微信，每日100条免费额度',
+					},
+				],
+				description: 'Choose WeChat service (Personal WeChat recommended)',
+			},
+			{
+				displayName: 'Message Type',
+				name: 'resource',
+				type: 'options',
+				default: 'message',
+				options: [
+					{
+						name: '💬 Text Message',
+						value: 'message',
+						description: 'Send text message',
+					},
+					{
+						name: '🖼️ Image',
+						value: 'image',
+						description: 'Send image file',
+					},
+					{
+						name: '🎥 Video',
+						value: 'video',
+						description: 'Send video file',
+					},
+					{
+						name: '📄 Document',
+						value: 'document',
+						description: 'Send document file',
+					},
+					{
+						name: '🎵 Audio',
+						value: 'audio',
+						description: 'Send audio file',
+					},
+					{
+						name: '📎 File',
+						value: 'file',
+						description: 'Send any file type',
+					},
+				],
+				description: 'Type of message to send',
+			},
+			// 个人微信目标配置
+			{
+				displayName: 'Chat Type',
+				name: 'chatType',
 				type: 'options',
 				default: 'contact',
 				options: [
 					{
-						name: 'Contact',
+						name: '👤 Contact (联系人)',
 						value: 'contact',
 						description: 'Send to a WeChat contact',
 					},
 					{
-						name: 'Room',
+						name: '👥 Group Chat (群聊)',
 						value: 'room',
 						description: 'Send to a WeChat group',
 					},
 					{
-						name: 'FileHelper',
+						name: '📁 File Helper (文件传输助手)',
 						value: 'filehelper',
 						description: 'Send to WeChat file transfer assistant',
 					},
 				],
-				description: 'Choose the type of target to send message to',
-			},
-			{
-				displayName: 'Receiver ID',
-				name: 'toId',
-				type: 'string',
-				default: '',
 				displayOptions: {
-					hide: {
-						toType: ['filehelper'],
+					show: {
+						service: ['personal-wechat'],
 					},
 				},
-				description: 'The ID of contact or room to send to',
+				description: 'Choose chat target type',
 			},
 			{
-				displayName: 'Mode',
-				name: 'mode',
-				type: 'options',
-				default: 'text',
-				options: [
-					{
-						name: 'Text',
-						value: 'text',
-						description: 'Send text message',
+				displayName: 'Contact/Group Name',
+				name: 'chatId',
+				type: 'string',
+				default: '',
+				required: true,
+				displayOptions: {
+					show: {
+						service: ['personal-wechat'],
+						chatType: ['contact', 'room'],
 					},
-					{
-						name: 'File by URL',
-						value: 'file',
-						description: 'Send file by URL',
-					},
-				],
-				description: 'Choose message type to send',
+				},
+				description: 'Name or ID of the contact/group to send message to',
+				placeholder: '联系人备注名或群名称',
 			},
+			// 消息内容配置
 			{
-				displayName: 'Text',
+				displayName: 'Message Text',
 				name: 'text',
 				type: 'string',
+				typeOptions: {
+					rows: 4,
+				},
 				default: '',
 				required: true,
 				displayOptions: {
 					show: {
-						mode: ['text'],
+						resource: ['message'],
 					},
 				},
-				description: 'Text message to send',
+				description: 'Text content to send',
 			},
+			
+			// Server酱特殊配置
+			{
+				displayName: 'Message Title',
+				name: 'title',
+				type: 'string',
+				default: 'Message from n8n',
+				displayOptions: {
+					show: {
+						service: ['server-chan'],
+					},
+				},
+				description: 'Message title (Server酱 only)',
+			},
+			// 文件URL输入 (仅在文件类型时显示)
 			{
 				displayName: 'File URL',
-				name: 'url',
+				name: 'fileUrl',
 				type: 'string',
 				default: '',
 				required: true,
 				displayOptions: {
 					show: {
-						mode: ['file'],
+						resource: ['image', 'video', 'document', 'audio', 'file'],
 					},
 				},
 				description: 'URL of the file to send',
+				placeholder: 'https://example.com/file.jpg',
 			},
 			{
-				displayName: 'Filename',
-				name: 'filename',
+				displayName: 'File Name',
+				name: 'fileName',
 				type: 'string',
 				default: '',
 				displayOptions: {
 					show: {
-						mode: ['file'],
+						resource: ['image', 'video', 'document', 'audio', 'file'],
 					},
 				},
-				description: 'Filename for the file (optional)',
+				description: 'Optional custom filename (will use original if not provided)',
+			},
+			{
+				displayName: 'Additional Options',
+				name: 'additionalFields',
+				type: 'collection',
+				placeholder: 'Add Field',
+				default: {},
+				displayOptions: {
+					show: {
+						resource: ['image', 'video', 'document', 'audio', 'file'],
+					},
+				},
+				options: [
+					{
+						displayName: 'Caption/Description',
+						name: 'caption',
+						type: 'string',
+						typeOptions: {
+							rows: 2,
+						},
+						default: '',
+						description: 'Caption or description for the file',
+					},
+				],
 			},
 		],
 	};
@@ -166,53 +270,72 @@ export class WechatPersonalSend implements INodeType {
 
 		for (let i = 0; i < items.length; i++) {
 			try {
-				const toType = this.getNodeParameter('toType', i) as string;
-				const mode = this.getNodeParameter('mode', i) as string;
+				const service = this.getNodeParameter('service', i) as string;
+				const resource = this.getNodeParameter('resource', i) as string;
 
-				const requestBody: any = { toType };
-
-				// 只有在不是 filehelper 时才获取 toId 参数
-				if (toType !== 'filehelper') {
-					const toId = this.getNodeParameter('toId', i) as string;
-					if (toId) {
-						requestBody.toId = toId;
-					}
-				}
-
-				let path: string;
 				let response: any;
 
-				if (mode === 'file') {
-					const fileUrl = this.getNodeParameter('url', i) as string;
-					const filename = this.getNodeParameter('filename', i) as string;
-
-					if (!fileUrl) {
-						throw new NodeOperationError(this.getNode(), 'File URL is required when sending files');
-					}
-
-					requestBody.url = fileUrl;
-					if (filename) {
-						requestBody.filename = filename;
-					}
-
-					path = '/send/file';
-				} else {
+				if (resource === 'message') {
+					// 发送文本消息
 					const text = this.getNodeParameter('text', i) as string;
+					const requestBody: any = { service, text };
 
-					if (!text) {
-						throw new NodeOperationError(this.getNode(), 'Text message is required when sending text');
+					// 添加服务特定参数
+					if (service === 'server-chan') {
+						const title = this.getNodeParameter('title', i) as string;
+						requestBody.title = title || 'Message from n8n';
+					} else if (service === 'personal-wechat') {
+						const chatType = this.getNodeParameter('chatType', i) as string;
+						requestBody.toType = chatType;
+						
+						if (chatType !== 'filehelper') {
+							const chatId = this.getNodeParameter('chatId', i) as string;
+							if (chatId) {
+								requestBody.toId = chatId;
+							}
+						}
 					}
 
-					requestBody.text = text;
-					path = '/send/text';
-				}
+					response = await requestWithAuth(this, '/send/text', 'POST', requestBody);
+				} else {
+					// 发送文件 (image, video, document, audio, file)
+					const fileUrl = this.getNodeParameter('fileUrl', i) as string;
+					const fileName = this.getNodeParameter('fileName', i) as string;
+					const additionalFields = this.getNodeParameter('additionalFields', i) as any;
 
-				response = await requestWithAuth(this, path, 'POST', requestBody);
+					// 构建请求体
+					const requestBody: any = { 
+						service,
+						url: fileUrl,
+						filename: fileName || 'file'
+					};
+					
+					// 添加服务特定参数
+					if (service === 'personal-wechat') {
+						const chatType = this.getNodeParameter('chatType', i) as string;
+						requestBody.toType = chatType;
+						
+						if (chatType !== 'filehelper') {
+							const chatId = this.getNodeParameter('chatId', i) as string;
+							if (chatId) {
+								requestBody.toId = chatId;
+							}
+						}
+					}
+
+					// 添加说明文字（如果有）
+					if (additionalFields?.caption) {
+						requestBody.caption = additionalFields.caption;
+					}
+
+					response = await requestWithAuth(this, '/send/file', 'POST', requestBody);
+				}
 
 				returnData.push({
 					json: {
 						success: true,
-						request: requestBody,
+						service,
+						messageType: resource,
 						response,
 					},
 					pairedItem: i,
@@ -234,4 +357,55 @@ export class WechatPersonalSend implements INodeType {
 
 		return [returnData];
 	}
+
 }
+
+async function uploadFileHelper(
+	this: IExecuteFunctions, 
+	service: string, 
+	fileData: any, 
+	fileName: string
+) {
+	const credentials = await this.getCredentials('wechatPersonalApi');
+	const baseUrl = String(credentials?.baseUrl || '').replace(/\/+$/, '');
+	
+	// 获取文件的二进制数据
+	const buffer = await this.helpers.getBinaryDataBuffer(fileData.id, fileData.data);
+	
+	// 准备 FormData
+	const formData = {
+		service: service,
+		filename: fileName,
+		file: {
+			value: buffer,
+			options: {
+				filename: fileName,
+				contentType: fileData.mimeType || 'application/octet-stream'
+			}
+		}
+	};
+
+	const headers: { [key: string]: string } = {};
+	if (credentials?.apiKey) {
+		headers['x-api-key'] = credentials.apiKey as string;
+	}
+
+	const options = {
+		method: 'POST' as IHttpRequestMethods,
+		url: `${baseUrl}/upload/file`,
+		headers,
+		formData,
+		timeout: 300000, // 5分钟超时，适合大文件
+	};
+
+	try {
+		return await this.helpers.request(options);
+	} catch (error: any) {
+		throw new NodeOperationError(
+			this.getNode(),
+			`File upload failed: ${error.message}`,
+			{ description: error.description }
+		);
+	}
+}
+
