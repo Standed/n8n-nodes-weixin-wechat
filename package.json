@@ -1,0 +1,57 @@
+{
+  "name": "n8n-nodes-weixin-wechat",
+  "version": "1.0.4",
+  "description": "西羊石AI微信插件 - 支持企业微信机器人、个人微信自动化 | WeChat integration for n8n with enterprise bot and personal WeChat automation",
+  "author": "西羊石AI (xysaiai.cn)",
+  "homepage": "https://xysaiai.cn/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xysaiai/n8n-nodes-weixin-wechat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/xysaiai/n8n-nodes-weixin-wechat/issues"
+  },
+  "license": "MIT",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n-nodes",
+    "wechat",
+    "weixin",
+    "微信",
+    "企业微信",
+    "自动化",
+    "西羊石AI"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint . --ext .ts",
+    "lintfix": "eslint . --ext .ts --fix",
+    "dev": "tsc --watch",
+    "prepack": "npm run build"
+  },
+  "files": [
+    "dist/**/*",
+    "credentials/**/*",
+    "nodes/**/*",
+    "icons/**/*"
+  ],
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.5.4"
+  },
+  "peerDependencies": {
+    "n8n-workflow": ">=1.0.0"
+  },
+  "n8n": {
+    "nodes": [
+      "dist/nodes/WeixinWechatSend.node.js"
+    ],
+    "credentials": [
+      "dist/credentials/WeixinWechatApi.credentials.js"
+    ]
+  }
+}
