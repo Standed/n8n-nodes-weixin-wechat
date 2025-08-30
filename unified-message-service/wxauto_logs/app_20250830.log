@@ -1,0 +1,197 @@
+2025-08-30 12:40:18 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:40:32 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:43:03 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:43:06 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:43:07 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 12:43:08 [wxauto] [DEBUG] [sessionbox.py:128]  文件传输助手 完整匹配
+2025-08-30 12:45:42 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:45:43 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:45:43 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 12:47:44 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:47:45 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:47:45 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 2025一个小目标, False, False, 0.5
+2025-08-30 12:49:59 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:49:59 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:49:59 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 12:50:01 [wxauto] [DEBUG] [sessionbox.py:128]  小石学长 AI视频 深圳 完整匹配
+2025-08-30 12:50:28 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:50:29 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:50:29 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 12:50:30 [wxauto] [DEBUG] [sessionbox.py:128]  文件传输助手 完整匹配
+2025-08-30 12:51:19 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:51:26 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 12:51:26 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 13:04:25 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:04:28 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:04:28 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 13:09:01 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:09:08 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:09:08 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, 中流击水, False, False, 0.5
+2025-08-30 13:12:27 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:21:03 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:21:06 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:21:06 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 13:22:35 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:22:39 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:22:39 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 13:23:07 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:23:10 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:23:10 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 西堂, False, False, 0.5
+2025-08-30 13:23:16 [wxauto] [DEBUG] [sessionbox.py:143]  西堂 匹配到多个结果，返回第一个
+2025-08-30 13:23:22 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:23:27 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:23:27 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 中流击水，小石学长, False, False, 0.5
+2025-08-30 13:24:27 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:24:28 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:24:28 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小淇, False, False, 0.5
+2025-08-30 13:24:38 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:24:39 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:24:39 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 中流击水, False, False, 0.5
+2025-08-30 13:24:53 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:24:53 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:24:53 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长, False, False, 0.5
+2025-08-30 13:24:59 [wxauto] [DEBUG] [sessionbox.py:143]  小石学长 匹配到多个结果，返回第一个
+2025-08-30 13:33:15 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:33:16 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:33:16 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长, False, False, 0.5
+2025-08-30 13:33:22 [wxauto] [DEBUG] [sessionbox.py:143]  小石学长 匹配到多个结果，返回第一个
+2025-08-30 13:33:29 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:33:29 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:33:29 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小淇，中流击水, False, False, 0.5
+2025-08-30 13:33:53 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:33:53 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:33:54 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长, False, False, 0.5
+2025-08-30 13:34:00 [wxauto] [DEBUG] [sessionbox.py:143]  小石学长 匹配到多个结果，返回第一个
+2025-08-30 13:34:09 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:34:09 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:34:09 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小淇, False, False, 0.5
+2025-08-30 13:34:10 [wxauto] [DEBUG] [sessionbox.py:128]  小淇 完整匹配
+2025-08-30 13:34:17 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:34:17 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:34:17 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 中流击水, False, False, 0.5
+2025-08-30 13:35:23 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:35:24 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:35:24 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 深圳 AI视频, False, False, 0.5
+2025-08-30 13:35:39 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:35:39 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:35:40 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 13:35:41 [wxauto] [DEBUG] [sessionbox.py:128]  aabb 完整匹配
+2025-08-30 13:35:48 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:35:49 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:35:49 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 13:36:16 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:36:16 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:36:16 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 13:36:23 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:36:23 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:36:23 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 13:36:33 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:36:33 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:36:33 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 13:40:31 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:40:31 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:40:31 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 西羊石秘密武器库, False, False, 0.5
+2025-08-30 13:40:33 [wxauto] [DEBUG] [sessionbox.py:128]  西羊石秘密武器库 完整匹配
+2025-08-30 13:40:39 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:40:39 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:40:39 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 【西羊石鹿】 口碑 & 身体, False, False, 0.5
+2025-08-30 13:42:29 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:42:34 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:42:34 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 西羊石秘密武器库, False, False, 0.5
+2025-08-30 13:42:36 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:42:41 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:42:41 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 【西羊石鹿】 口碑 & 身体, False, False, 0.5
+2025-08-30 13:44:42 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:44:47 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:44:47 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 13:44:49 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:44:53 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:44:53 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 13:44:55 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 13:48:43 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:03:06 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:03:11 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:03:11 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 14:03:13 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:03:18 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:03:18 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 14:03:19 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:03:28 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:03:28 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 14:05:09 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:05:09 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:05:09 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 14:05:15 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:05:15 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:05:15 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 14:05:23 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:05:23 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:05:23 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 14:08:12 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:09:48 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:09:57 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:09:57 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 14:10:06 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:10:12 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:10:12 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 14:10:21 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:10:26 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:10:27 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 14:11:19 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:27 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:27 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 14:11:31 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:31 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:31 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 14:11:38 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:43 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:43 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 14:11:47 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:47 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:47 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 14:11:52 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:57 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:11:57 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 14:12:01 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:12:01 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 14:12:01 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 18:13:42 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:13:50 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:14:24 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:14:54 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:14:55 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:14:55 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 18:14:57 [wxauto] [DEBUG] [sessionbox.py:128]  文件传输助手 完整匹配
+2025-08-30 18:15:28 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:15:29 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:15:29 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 小石学长 AI视频 深圳, False, False, 0.5
+2025-08-30 18:15:42 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:15:42 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:15:42 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: aabb, False, False, 0.5
+2025-08-30 18:15:44 [wxauto] [DEBUG] [sessionbox.py:128]  aabb 完整匹配
+2025-08-30 18:15:53 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:15:53 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 18:15:53 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 18:18:19 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:12:08 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:12:08 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:12:09 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 19:12:10 [wxauto] [DEBUG] [sessionbox.py:128]  文件传输助手 完整匹配
+2025-08-30 19:16:17 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:16:26 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:24:03 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:24:03 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:24:03 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 19:24:05 [wxauto] [DEBUG] [sessionbox.py:128]  文件传输助手 完整匹配
+2025-08-30 19:24:42 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:34:02 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:34:03 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:34:03 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 19:34:05 [wxauto] [DEBUG] [sessionbox.py:128]  文件传输助手 完整匹配
+2025-08-30 19:34:10 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:36:35 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:36:36 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:36:40 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:36:40 [wxauto] [DEBUG] [wx.py:31]  开始监听
+2025-08-30 19:36:41 [wxauto] [DEBUG] [sessionbox.py:68]  切换聊天窗口: 文件传输助手, False, False, 0.5
+2025-08-30 19:36:42 [wxauto] [DEBUG] [sessionbox.py:128]  文件传输助手 完整匹配

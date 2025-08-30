@@ -1,7 +1,7 @@
 {
   "name": "unified-message-service",
   "version": "1.0.0",
-  "description": "Unified message service supporting WeChat Enterprise, Personal WeChat, Server酱 and more",
+  "description": "Unified message service supporting WeChat Enterprise and Personal WeChat via WxAuto",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -12,7 +12,7 @@
   "keywords": [
     "wechat",
     "enterprise-wechat",
-    "server-chan",
+    "wxauto",
     "message",
     "push",
     "n8n"
