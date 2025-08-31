@@ -1,78 +1,103 @@
 @echo off
 chcp 65001 >nul
-title 西羊石AI个人微信自动化服务
+title XYS WeChat Personal Service
 color 0A
+cls
 echo.
-echo ╔═══════════════════════════════════════════════════════════╗
-echo ║                 西羊石AI个人微信自动化服务                  ║
-echo ║                 官网: https://xysaiai.cn/                 ║
-echo ╚═══════════════════════════════════════════════════════════╝
+echo    ██╗  ██╗██╗   ██╗███████╗ █████╗ ██╗
+echo    ╚██╗██╔╝╚██╗ ██╔╝██╔════╝██╔══██╗██║
+echo     ╚███╔╝  ╚████╔╝ ███████╗███████║██║
+echo     ██╔██╗   ╚██╔╝  ╚════██║██╔══██║██║
+echo    ██╔╝ ██╗   ██║   ███████║██║  ██║██║
+echo    ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝
+echo.
+echo    ██╗    ██╗███████╗ ██████╗██╗  ██╗ █████╗ ████████╗
+echo    ██║    ██║██╔════╝██╔════╝██║  ██║██╔══██╗╚══██╔══╝
+echo    ██║ █╗ ██║█████╗  ██║     ███████║███████║   ██║
+echo    ██║███╗██║██╔══╝  ██║     ██╔══██║██╔══██║   ██║
+echo    ╚███╔███╔╝███████╗╚██████╗██║  ██║██║  ██║   ██║
+echo     ╚══╝╚══╝ ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝
+echo.
+echo    ███████╗███████╗██████╗ ██╗   ██╗██╗ ██████╗███████╗
+echo    ██╔════╝██╔════╝██╔══██╗██║   ██║██║██╔════╝██╔════╝
+echo    ███████╗█████╗  ██████╔╝██║   ██║██║██║     █████╗
+echo    ╚════██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██║██║     ██╔══╝
+echo    ███████║███████╗██║  ██║ ╚████╔╝ ██║╚██████╗███████╗
+echo    ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝ ╚═════╝╚══════╝
+echo.
+echo    ╔════════════════════════════════════════════════════╗
+echo    ║        Personal WeChat Automation Service          ║
+echo    ║            Website: https://xysaiai.cn             ║
+echo    ║         Follow WeChat: XYS AI Video                ║
+echo    ╚════════════════════════════════════════════════════╝
 echo.
 
-echo 🔍 正在检查运行环境...
+echo [INFO] Checking Runtime Environment...
+echo.
 
-REM 检查Node.js
+REM Check Node.js
 node --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ 未检测到Node.js
-    echo 💡 正在打开Node.js下载页面...
+    echo [ERROR] Node.js not found
+    echo [ACTION] Opening Node.js download page...
     start https://nodejs.org/
     echo.
-    echo 请下载安装Node.js后重新运行本脚本
+    echo Please install Node.js and run this script again
     pause
     exit /b 1
 )
-echo ✅ Node.js环境正常
+echo [OK] Node.js environment ready
 
-REM 检查Python  
+REM Check Python  
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo ❌ 未检测到Python
-    echo 💡 正在打开Python下载页面...
+    echo [ERROR] Python not found
+    echo [ACTION] Opening Python download page...
     start https://python.org/downloads/
     echo.
-    echo 请下载安装Python后重新运行本脚本
+    echo Please install Python and run this script again
     pause  
     exit /b 1
 )
-echo ✅ Python环境正常
+echo [OK] Python environment ready
 
-REM 检查微信是否运行
+REM Check WeChat Process
 tasklist /fi "imagename eq wechat.exe" 2>nul | find "wechat.exe" >nul
 if errorlevel 1 (
-    echo ⚠️  未检测到微信客户端运行
-    echo 💡 请先启动并登录微信PC客户端
+    echo [WARN] WeChat client not detected
+    echo [INFO] Please start and login WeChat PC client first
     echo.
-    echo 按任意键继续（如果微信已在运行）...
+    echo Press any key to continue if WeChat is running...
     pause >nul
 )
 
 echo.
-echo 📦 正在准备服务环境...
+echo [INFO] Preparing Service Environment...
+echo.
 
-REM 安装Node.js依赖
+REM Install Node.js dependencies
 if not exist "node_modules" (
-    echo 正在安装Node.js依赖...
+    echo Installing Node.js dependencies...
     npm install
     if errorlevel 1 (
-        echo ❌ Node.js依赖安装失败
+        echo [ERROR] Failed to install Node.js dependencies
         pause
         exit /b 1
     )
 )
 
-REM 安装Python依赖
-echo 正在检查Python依赖...
+REM Install Python dependencies
+echo Checking Python dependencies...
 python -c "import wxauto" 2>nul
 if errorlevel 1 (
-    echo 正在安装wxauto依赖...
+    echo Installing wxauto dependencies...
     pip install wxauto
     if errorlevel 1 (
-        echo 尝试使用国内镜像源...
+        echo Trying with China mirror source...
         pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
         if errorlevel 1 (
-            echo ❌ wxauto依赖安装失败
-            echo 💡 请手动运行: pip install wxauto
+            echo [ERROR] Failed to install wxauto
+            echo [FIX] Please manually run: pip install wxauto
             pause
             exit /b 1
         )
@@ -80,18 +105,21 @@ if errorlevel 1 (
 )
 
 echo.
-echo 🚀 正在启动个人微信自动化服务...
-echo 📌 服务地址: http://localhost:3001
-echo 💡 在N8N中配置此地址即可使用
+echo    ╔═══════════════════════════════════════╗
+echo    ║         SERVICE STARTING              ║
+echo    ╚═══════════════════════════════════════╝
 echo.
-echo ────────────────────────────────────────────────────
-echo 按 Ctrl+C 停止服务
-echo ────────────────────────────────────────────────────
+echo [INFO] Service URL: http://localhost:3001
+echo [INFO] Configure this URL in your n8n node
+echo.
+echo ================================================
+echo Press Ctrl+C to stop service
+echo ================================================
 echo.
 
-REM 启动服务
+REM Start service
 node index.js
 
 echo.
-echo 服务已停止
+echo [INFO] Service stopped
 pause
