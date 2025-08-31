@@ -550,11 +550,11 @@ export class WeixinWechatSend implements INodeType {
 				displayName: '个人微信服务地址',
 				name: 'personalWechatService',
 				type: 'string',
-				default: 'http://localhost:3001',
+				default: 'http://localhost:3000',
 				displayOptions: {
 					show: { service: ['personal-wechat'] }
 				},
-				placeholder: 'http://localhost:3001',
+				placeholder: 'http://localhost:3000',
 				description: '🖥️ 个人微信PC服务地址 | 需先下载并运行个人微信服务程序',
 				required: true,
 			},
@@ -569,7 +569,7 @@ export class WeixinWechatSend implements INodeType {
 				typeOptions: {
 					theme: 'info',
 				},
-				description: '📦 <b>1. 下载服务：</b><a href="https://github.com/Standed/n8n-nodes-weixin-wechat" target="_blank">GitHub仓库</a> → personal-wechat-service目录<br/>🖱️ <b>2. Windows一键启动：</b>双击 start.bat 即可 (自动安装依赖)<br/>🔌 <b>3. 配置地址：</b>本地 http://localhost:3001 | Docker: http://host.docker.internal:3001 | 云端: http://您的IP:3001',
+				description: '📦 <b>1. 下载服务：</b><a href="https://github.com/Standed/n8n-nodes-weixin-wechat" target="_blank">GitHub仓库</a> → personal-wechat-service目录<br/>🖱️ <b>2. Windows一键启动：</b>双击 一键启动.bat 即可 (自动安装依赖)<br/>🔌 <b>3. 配置地址：</b>本地 http://localhost:3000 | Docker: http://host.docker.internal:3000 | 云端: http://您的IP:3000',
 			},
 			// 企业微信消息类型配置
 			{

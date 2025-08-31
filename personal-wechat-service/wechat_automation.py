@@ -14,13 +14,13 @@ import time
 import logging
 from datetime import datetime
 
-# 配置日志
+# 配置日志 - 只输出到文件，避免污染stdout
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('wechat_automation.log', encoding='utf-8'),
-        logging.StreamHandler()
+        logging.FileHandler('wechat_automation.log', encoding='utf-8')
+        # 移除StreamHandler()避免日志输出污染JSON结果
     ]
 )
 

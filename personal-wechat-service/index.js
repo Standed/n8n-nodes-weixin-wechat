@@ -60,16 +60,27 @@ async function callPythonScript(action, data = null) {
             pythonProcess.on('close', (code) => {
                 if (code === 0) {
                     try {
+                        // 尝试直接解析JSON
                         const result = JSON.parse(stdout);
                         resolve(result);
                     } catch (parseError) {
-                        log(`❌ Python输出解析失败: ${parseError.message}`);
-                        resolve({
-                            success: false,
-                            error: 'Python输出格式错误',
-                            stdout: stdout,
-                            stderr: stderr
-                        });
+                        // 如果直接解析失败，尝试提取最后一行的JSON
+                        try {
+                            const lines = stdout.trim().split('\n');
+                            const lastLine = lines[lines.length - 1];
+                            const result = JSON.parse(lastLine);
+                            resolve(result);
+                        } catch (secondParseError) {
+                            log(`❌ Python输出解析失败: ${parseError.message}`);
+                            log(`❌ 尝试解析最后一行也失败: ${secondParseError.message}`);
+                            log(`❌ 原始输出: ${stdout}`);
+                            resolve({
+                                success: false,
+                                error: 'Python输出格式错误',
+                                stdout: stdout,
+                                stderr: stderr
+                            });
+                        }
                     }
                 } else {
                     log(`❌ Python脚本执行失败 (code: ${code})`);
