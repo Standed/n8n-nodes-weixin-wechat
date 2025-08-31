@@ -1,15 +1,21 @@
-# Development files
-.eslintrc.js
-.eslintrc
-.eslintrc.json
-.eslintignore
-tsconfig.json
+# Development files - exclude ALL development config files
+.eslintrc*
+.eslint*
+tsconfig*.json
 .editorconfig
 .gitignore
+.git/
+*.config.js
+*.config.json
+.env
+.env.*
 
 # Source files (we only need dist/)
-*.ts
-!*.d.ts
+credentials/*.ts
+nodes/*.ts
+embedded-service/*.js
+!dist/**/*.ts
+!dist/**/*.d.ts
 
 # Test files
 test/
@@ -49,3 +55,11 @@ coverage/
 
 # Documentation development files
 docs/
+
+# Personal wechat service (separate from n8n package)
+personal-wechat-service/
+
+# Backup and development files
+*.backup.*
+*.simple.*
+*.bak
