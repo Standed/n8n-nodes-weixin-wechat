@@ -45,12 +45,7 @@ def send_text_message(text, to_type, to_ids, batch_options=None):
         log("正在初始化微信客户端...")
         wx = WeChat()
         
-        # 检查微信是否已登录
-        if not hasattr(wx, 'UiaAPI'):
-            return {
-                'success': False,
-                'error': '微信客户端未启动或未登录，请先登录PC微信客户端'
-            }
+        # wxauto初始化成功即表示微信环境正常，无需额外检测
 
         results = []
         
