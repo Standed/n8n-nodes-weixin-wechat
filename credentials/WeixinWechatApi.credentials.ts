@@ -11,14 +11,6 @@ export class WeixinWechatApi implements ICredentialType {
 	documentationUrl = 'https://xysaiai.cn/';
 	properties: INodeProperties[] = [
 		{
-			displayName: 'Base URL',
-			name: 'baseUrl',
-			type: 'string',
-			default: 'http://localhost:3000',
-			required: true,
-			description: '西羊石AI微信插件服务的基础URL',
-		},
-		{
 			displayName: 'API Key',
 			name: 'apiKey',
 			type: 'string',
@@ -27,16 +19,21 @@ export class WeixinWechatApi implements ICredentialType {
 			required: true,
 			description: '🔑 关注公众号"西羊石AI视频"发送"API"获取免费密钥 | 官网: https://xysaiai.cn/',
 		},
+		{
+			displayName: '个人微信服务地址',
+			name: 'serviceUrl',
+			type: 'string',
+			default: 'http://localhost:3001',
+			required: true,
+			description: '个人微信PC服务地址 | 本地: http://localhost:3001 | Docker: http://host.docker.internal:3001 | 云端: http://您的PC公网IP:3001',
+		},
 	];
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: '={{$credentials.baseUrl}}',
+			baseURL: '={{$credentials.serviceUrl || "http://localhost:3001"}}',
 			url: '/health',
 			method: 'GET',
-			headers: {
-				'x-api-key': '={{$credentials.apiKey}}',
-			},
 		},
 	};
 }

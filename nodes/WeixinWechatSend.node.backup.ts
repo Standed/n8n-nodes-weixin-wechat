@@ -116,77 +116,65 @@ async function startEmbeddedWechatService(): Promise<number> {
 
 			if (service === 'enterprise-wechat-bot') {
 				// 企业微信机器人发送
-				const { webhook, messageType, enterpriseText, enterpriseMarkdown } = req.body;
-				
-				if (!webhook || webhook.includes('YOUR_KEY')) {
-					return res.status(400).json({
-						success: false,
-						error: '请在节点中配置企业微信Webhook地址'
-					});
+				const webhook = process.env.ENTERPRISE_WECHAT_BOT_WEBHOOK || 
+					'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY_HERE';
+
+				if (webhook.includes('YOUR_KEY_HERE')) {
+					throw new Error('请配置企业微信机器人webhook地址');
 				}
 
-				let payload: any;
-				
-				// 根据消息类型构建不同的payload
-				if (messageType === 'markdown') {
-					payload = {
-						msgtype: 'markdown',
-						markdown: { 
-							content: enterpriseMarkdown || text || '# 标题\n**粗体文本**'
-						}
-					};
-				} else {
-					// 默认为text类型
-					payload = {
-						msgtype: 'text',
-						text: { 
-							content: enterpriseText || text || '消息内容不能为空'
-						}
-					};
-				}
-
-				const response = await axios.post(webhook, payload);
+				const response = await axios.post(webhook, {
+					msgtype: 'text',
+					text: { content: text }
+				});
 
 				res.json({
 					success: true,
-					message: `企业微信${messageType === 'markdown' ? 'Markdown' : '文本'}消息发送成功`,
-					messageType: messageType || 'text',
+					message: '企业微信消息发送成功',
 					response: response.data
 				});
 			} else if (service === 'personal-wechat') {
-				// 个人微信自动化 - 代理到PC服务
-				const { personalWechatService } = req.body;
+				// 个人微信自动化 - 简化版本
+				console.log(`📱 个人微信发送: ${text} 到 ${toType}`);
 				
-				if (!personalWechatService) {
-					return res.status(400).json({
-						success: false,
-						error: '请配置个人微信服务地址',
-						help: '需要在PC上下载并运行个人微信服务程序'
-					});
-				}
-
-				try {
-					console.log(`🔄 代理个人微信请求到: ${personalWechatService}`);
-					const response = await axios.post(`${personalWechatService}/send/text`, req.body, {
-						timeout: 30000,
-						headers: { 'Content-Type': 'application/json' }
-					});
-					
+				if (toType === 'filehelper') {
 					res.json({
 						success: true,
-						message: '个人微信消息发送成功',
-						response: response.data,
-						serviceUrl: personalWechatService
+						message: '已发送到文件传输助手',
+						target: 'filehelper'
 					});
-				} catch (error: any) {
-					console.error('个人微信服务连接失败:', error.message);
-					res.status(500).json({
-						success: false,
-						error: `无法连接个人微信服务: ${error.message}`,
-						serviceUrl: personalWechatService,
-						help: '请确保个人微信服务已在PC上运行，并检查服务地址是否正确'
-					});
+					return;
 				}
+
+				if (toIds && toIds.length > 0) {
+					const results = [];
+					for (const toId of toIds) {
+						console.log(`📤 发送给: ${toId}`);
+						results.push({
+							target: toId,
+							success: true,
+							message: '发送成功'
+						});
+						
+						// 批量发送延迟
+						if (batchOptions?.sendDelay) {
+							await new Promise(resolve => 
+								setTimeout(resolve, batchOptions.sendDelay * 1000)
+							);
+						}
+					}
+					res.json({
+						success: true,
+						message: '批量发送完成',
+						results
+					});
+					return;
+				}
+
+				res.json({
+					success: true,
+					message: '个人微信消息发送成功'
+				});
 			} else {
 				throw new Error('不支持的服务类型');
 			}
@@ -205,14 +193,8 @@ async function startEmbeddedWechatService(): Promise<number> {
 
 			if (service === 'enterprise-wechat-bot') {
 				// 企业微信文件发送 - 简化版：发送文件链接
-				const { webhook } = req.body;
-				
-				if (!webhook || webhook.includes('YOUR_KEY')) {
-					return res.status(400).json({
-						success: false,
-						error: '请在节点中配置企业微信Webhook地址'
-					});
-				}
+				const webhook = process.env.ENTERPRISE_WECHAT_BOT_WEBHOOK || 
+					'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY_HERE';
 
 				const response = await axios.post(webhook, {
 					msgtype: 'text',
@@ -227,41 +209,14 @@ async function startEmbeddedWechatService(): Promise<number> {
 					response: response.data
 				});
 			} else if (service === 'personal-wechat') {
-				// 个人微信文件发送 - 代理到PC服务
-				const { personalWechatService } = req.body;
+				// 个人微信文件发送 - 简化版本
+				console.log(`📎 个人微信文件发送: ${filename} 到 ${toType}`);
 				
-				if (!personalWechatService) {
-					return res.status(400).json({
-						success: false,
-						error: '请配置个人微信服务地址',
-						help: '需要在PC上下载并运行个人微信服务程序'
-					});
-				}
-
-				try {
-					console.log(`🔄 代理个人微信文件请求到: ${personalWechatService}`);
-					const response = await axios.post(`${personalWechatService}/send/file`, req.body, {
-						timeout: 120000, // 文件发送超时时间更长
-						headers: { 'Content-Type': 'application/json' }
-					});
-					
-					res.json({
-						success: true,
-						message: '个人微信文件发送成功',
-						filename,
-						response: response.data,
-						serviceUrl: personalWechatService
-					});
-				} catch (error: any) {
-					console.error('个人微信服务连接失败:', error.message);
-					res.status(500).json({
-						success: false,
-						error: `无法连接个人微信服务: ${error.message}`,
-						filename,
-						serviceUrl: personalWechatService,
-						help: '请确保个人微信服务已在PC上运行，并检查服务地址是否正确'
-					});
-				}
+				res.json({
+					success: true,
+					message: '个人微信文件发送成功',
+					filename
+				});
 			} else {
 				throw new Error('不支持的服务类型');
 			}
@@ -424,16 +379,18 @@ async function requestWithAuth(
 	body?: any,
 ) {
 	const credentials = await thisArg.getCredentials('weixinWechatApi');
-	let baseUrl = '';
+	let baseUrl = String(credentials?.baseUrl || '').replace(/\/+$/, '');
 
-	// 总是使用嵌入式服务
-	try {
-		const servicePort = await ensureEmbeddedServiceRunning();
-		baseUrl = `http://localhost:${servicePort}`;
-		console.log(`🔧 使用嵌入式服务: ${baseUrl}`);
-	} catch (error) {
-		console.error('嵌入式服务启动失败:', error);
-		baseUrl = 'http://localhost:3000'; // 回退到默认端口
+	// 如果用户使用默认的localhost:3000，尝试启动嵌入式服务
+	if (baseUrl === 'http://localhost:3000' || !baseUrl) {
+		try {
+			const servicePort = await ensureEmbeddedServiceRunning();
+			baseUrl = `http://localhost:${servicePort}`;
+			console.log(`🔧 使用嵌入式服务: ${baseUrl}`);
+		} catch (error) {
+			console.warn('嵌入式服务启动失败，使用原配置:', error);
+			baseUrl = baseUrl || 'http://localhost:3000';
+		}
 	}
 
 	const headers: { [key: string]: string } = {
@@ -526,90 +483,11 @@ export class WeixinWechatSend implements INodeType {
 					{
 						name: '🙋‍♂️ 个人微信自动化',
 						value: 'personal-wechat',
-						description: '需要在PC上运行个人微信服务程序，支持真实微信发送',
+						description: 'UI自动化控制微信PC版，兼容性强，无协议限制',
 					},
 				],
 				description: '选择微信服务 | 关注"西羊石AI视频"获取API | 官网: https://xysaiai.cn/',
 			},
-			// 企业微信webhook配置
-			{
-				displayName: '企业微信Webhook地址',
-				name: 'enterpriseWebhook',
-				type: 'string',
-				typeOptions: { password: true },
-				default: '',
-				displayOptions: {
-					show: { service: ['enterprise-wechat-bot'] }
-				},
-				placeholder: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY',
-				description: '企业微信群机器人的Webhook地址 | 群设置 → 机器人 → 添加机器人',
-				required: true,
-			},
-			// 个人微信服务配置
-			{
-				displayName: '个人微信服务地址',
-				name: 'personalWechatService',
-				type: 'string',
-				default: 'http://localhost:3001',
-				displayOptions: {
-					show: { service: ['personal-wechat'] }
-				},
-				placeholder: 'http://localhost:3001',
-				description: '🖥️ 个人微信PC服务地址 | 需先下载并运行个人微信服务程序',
-				required: true,
-			},
-			{
-				displayName: 'ℹ️ 个人微信服务说明',
-				name: 'personalWechatNotice',
-				type: 'notice',
-				default: '',
-				displayOptions: {
-					show: { service: ['personal-wechat'] }
-				},
-				typeOptions: {
-					theme: 'info',
-				},
-				description: '🔗 下载个人微信服务：https://github.com/xysaiai/wechat-personal-service<br/>📥 解压到PC上运行，默认端口3001<br/>🐳 Docker用户请使用：http://host.docker.internal:3001<br/>☁️ 云端N8N用户请使用：http://您的PC公网IP:3001',
-			},
-			// 企业微信消息类型配置
-			{
-				displayName: '消息类型',
-				name: 'enterpriseMessageType',
-				type: 'options',
-				default: 'text',
-				options: [
-					{
-						name: '💬 文本消息',
-						value: 'text',
-						description: '发送纯文本消息',
-					},
-					{
-						name: '📝 Markdown消息',
-						value: 'markdown',
-						description: '发送支持markdown格式的富文本消息',
-					},
-					{
-						name: '🖼️ 图片消息',
-						value: 'image',
-						description: '发送图片文件',
-					},
-					{
-						name: '📰 图文消息',
-						value: 'news',
-						description: '发送图文卡片消息',
-					},
-					{
-						name: '📎 文件消息',
-						value: 'file',
-						description: '发送文件附件',
-					},
-				],
-				displayOptions: {
-					show: { service: ['enterprise-wechat-bot'] }
-				},
-				description: '企业微信支持的消息类型',
-			},
-			// 个人微信消息类型配置
 			{
 				displayName: 'Message Type',
 				name: 'resource',
@@ -647,9 +525,6 @@ export class WeixinWechatSend implements INodeType {
 						description: 'Send any file type',
 					},
 				],
-				displayOptions: {
-					show: { service: ['personal-wechat'] }
-				},
 				description: 'Type of message to send',
 			},
 			// 个人微信目标配置
@@ -730,43 +605,7 @@ export class WeixinWechatSend implements INodeType {
 					},
 				],
 			},
-			// 企业微信文本消息配置
-			{
-				displayName: '消息内容',
-				name: 'enterpriseText',
-				type: 'string',
-				typeOptions: {
-					rows: 4,
-				},
-				default: '',
-				required: true,
-				displayOptions: {
-					show: {
-						service: ['enterprise-wechat-bot'],
-						enterpriseMessageType: ['text'],
-					},
-				},
-				description: '要发送的文本内容',
-			},
-			// 企业微信Markdown消息配置
-			{
-				displayName: 'Markdown内容',
-				name: 'enterpriseMarkdown',
-				type: 'string',
-				typeOptions: {
-					rows: 6,
-				},
-				default: '**粗体** *斜体* \n- 列表项1\n- 列表项2\n\n[链接](https://example.com)',
-				required: true,
-				displayOptions: {
-					show: {
-						service: ['enterprise-wechat-bot'],
-						enterpriseMessageType: ['markdown'],
-					},
-				},
-				description: '支持Markdown格式的富文本内容',
-			},
-			// 个人微信消息内容配置
+			// 消息内容配置
 			{
 				displayName: 'Message Text',
 				name: 'text',
@@ -778,7 +617,6 @@ export class WeixinWechatSend implements INodeType {
 				required: true,
 				displayOptions: {
 					show: {
-						service: ['personal-wechat'],
 						resource: ['message'],
 					},
 				},
@@ -888,42 +726,18 @@ export class WeixinWechatSend implements INodeType {
 		for (let i = 0; i < items.length; i++) {
 			try {
 				const service = this.getNodeParameter('service', i) as string;
+				const resource = this.getNodeParameter('resource', i) as string;
+
 				let response: any;
 
-				if (service === 'enterprise-wechat-bot') {
-					// 企业微信处理
-					const messageType = this.getNodeParameter('enterpriseMessageType', i) as string;
-					const webhook = this.getNodeParameter('enterpriseWebhook', i) as string;
+				if (resource === 'message') {
+					// 发送文本消息
+					const text = this.getNodeParameter('text', i) as string;
+					const requestBody: any = { service, text };
 
-					let messageContent: string;
-					if (messageType === 'markdown') {
-						messageContent = this.getNodeParameter('enterpriseMarkdown', i) as string;
-					} else {
-						messageContent = this.getNodeParameter('enterpriseText', i) as string;
-					}
-
-					const requestBody: any = {
-						service,
-						messageType,
-						webhook,
-						text: messageContent, // 保持兼容性
-						enterpriseText: messageType === 'text' ? messageContent : '',
-						enterpriseMarkdown: messageType === 'markdown' ? messageContent : ''
-					};
-
-					response = await requestWithAuth(this, '/send/text', 'POST', requestBody);
-				} else if (service === 'personal-wechat') {
-					// 个人微信处理
-					const resource = this.getNodeParameter('resource', i) as string;
-
-					if (resource === 'message') {
-						// 发送文本消息
-						const text = this.getNodeParameter('text', i) as string;
-						const requestBody: any = { service, text };
-						const personalWechatService = this.getNodeParameter('personalWechatService', i) as string;
+					// 添加服务特定参数
+					if (service === 'personal-wechat') {
 						const chatType = this.getNodeParameter('chatType', i) as string;
-						
-						requestBody.personalWechatService = personalWechatService;
 						requestBody.toType = chatType;
 						
 						if (chatType !== 'filehelper') {
@@ -940,10 +754,11 @@ export class WeixinWechatSend implements INodeType {
 								};
 							}
 						}
+					}
 
-						response = await requestWithAuth(this, '/send/text', 'POST', requestBody);
-					} else {
-						// 个人微信文件发送 (image, video, document, audio, file)
+					response = await requestWithAuth(this, '/send/text', 'POST', requestBody);
+				} else {
+					// 发送文件 (image, video, document, audio, file)
 					const fileInputMethod = this.getNodeParameter('fileInputMethod', i) as string;
 					const fileName = this.getNodeParameter('fileName', i) as string;
 					const additionalFields = this.getNodeParameter('additionalFields', i) as any;
@@ -982,25 +797,24 @@ export class WeixinWechatSend implements INodeType {
 						requestBody.filename = finalFileName;
 					}
 					
-					// 添加个人微信特定参数
-					const personalWechatService = this.getNodeParameter('personalWechatService', i) as string;
-					const chatType = this.getNodeParameter('chatType', i) as string;
-					
-					requestBody.personalWechatService = personalWechatService;
-					requestBody.toType = chatType;
-					
-					if (chatType !== 'filehelper') {
-						const chatId = this.getNodeParameter('chatId', i) as string;
-						const batchOptions = this.getNodeParameter('batchOptions', i) as any;
+					// 添加服务特定参数
+					if (service === 'personal-wechat') {
+						const chatType = this.getNodeParameter('chatType', i) as string;
+						requestBody.toType = chatType;
 						
-						if (chatId) {
-							// 支持多联系人（逗号分隔）
-							const targets = chatId.split(',').map(id => id.trim()).filter(id => id);
-							requestBody.toIds = targets;  // 使用复数形式传递多个目标
-							requestBody.batchOptions = {
-								sendDelay: batchOptions?.sendDelay || 3,
-								randomDelay: batchOptions?.randomDelay !== false
-							};
+						if (chatType !== 'filehelper') {
+							const chatId = this.getNodeParameter('chatId', i) as string;
+							const batchOptions = this.getNodeParameter('batchOptions', i) as any;
+							
+							if (chatId) {
+								// 支持多联系人（逗号分隔）
+								const targets = chatId.split(',').map(id => id.trim()).filter(id => id);
+								requestBody.toIds = targets;  // 使用复数形式传递多个目标
+								requestBody.batchOptions = {
+									sendDelay: batchOptions?.sendDelay || 3,
+									randomDelay: batchOptions?.randomDelay !== false
+								};
+							}
 						}
 					}
 
@@ -1010,22 +824,13 @@ export class WeixinWechatSend implements INodeType {
 					}
 
 					response = await requestWithAuth(this, '/send/file', 'POST', requestBody);
-					}
-				}
-
-				// 构建返回数据
-				let messageTypeForReturn: string;
-				if (service === 'enterprise-wechat-bot') {
-					messageTypeForReturn = this.getNodeParameter('enterpriseMessageType', i) as string;
-				} else {
-					messageTypeForReturn = this.getNodeParameter('resource', i) as string;
 				}
 
 				returnData.push({
 					json: {
 						success: true,
 						service,
-						messageType: messageTypeForReturn,
+						messageType: resource,
 						response,
 					},
 					pairedItem: i,

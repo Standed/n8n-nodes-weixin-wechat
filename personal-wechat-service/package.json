@@ -1,0 +1,21 @@
+{
+  "name": "wechat-personal-service",
+  "version": "1.0.0",
+  "description": "个人微信自动化服务 - 西羊石AI",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "author": "西羊石AI (xysaiai.cn)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.6.0",
+    "child_process": "*"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
