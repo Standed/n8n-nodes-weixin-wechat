@@ -68,6 +68,7 @@ if errorlevel 1 (
 echo.
 echo ==========================================
 echo [INFO] Service URL: http://localhost:3000
+echo [INFO] Health check: http://localhost:3000/health
 echo [INFO] Configure this URL in your n8n node
 echo ==========================================
 echo.

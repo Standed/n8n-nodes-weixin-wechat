@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-weixin-wechat",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "description": "西羊石AI微信插件 - 支持企业微信机器人、个人微信自动化 | WeChat integration for n8n with enterprise bot and personal WeChat automation",
   "author": "西羊石AI (xysaiai.cn)",
   "homepage": "https://xysaiai.cn/",

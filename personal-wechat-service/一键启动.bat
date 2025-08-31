@@ -4,33 +4,16 @@ title XYS WeChat Personal Service
 color 0A
 cls
 echo.
-echo    ██╗  ██╗██╗   ██╗███████╗ █████╗ ██╗
-echo    ╚██╗██╔╝╚██╗ ██╔╝██╔════╝██╔══██╗██║
-echo     ╚███╔╝  ╚████╔╝ ███████╗███████║██║
-echo     ██╔██╗   ╚██╔╝  ╚════██║██╔══██║██║
-echo    ██╔╝ ██╗   ██║   ███████║██║  ██║██║
-echo    ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝
+echo ========================================================
+echo            西羊石AI 个人微信自动化服务
+echo                 XYS WeChat Personal Service  
+echo ========================================================
 echo.
-echo    ██╗    ██╗███████╗ ██████╗██╗  ██╗ █████╗ ████████╗
-echo    ██║    ██║██╔════╝██╔════╝██║  ██║██╔══██╗╚══██╔══╝
-echo    ██║ █╗ ██║█████╗  ██║     ███████║███████║   ██║
-echo    ██║███╗██║██╔══╝  ██║     ██╔══██║██╔══██║   ██║
-echo    ╚███╔███╔╝███████╗╚██████╗██║  ██║██║  ██║   ██║
-echo     ╚══╝╚══╝ ╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝
+echo          官网: https://xysaiai.cn
+echo          关注公众号: 西羊石AI视频
+echo          技术支持: WeChat XYS AI Video
 echo.
-echo    ███████╗███████╗██████╗ ██╗   ██╗██╗ ██████╗███████╗
-echo    ██╔════╝██╔════╝██╔══██╗██║   ██║██║██╔════╝██╔════╝
-echo    ███████╗█████╗  ██████╔╝██║   ██║██║██║     █████╗
-echo    ╚════██║██╔══╝  ██╔══██╗╚██╗ ██╔╝██║██║     ██╔══╝
-echo    ███████║███████╗██║  ██║ ╚████╔╝ ██║╚██████╗███████╗
-echo    ╚══════╝╚══════╝╚═╝  ╚═╝  ╚═══╝  ╚═╝ ╚═════╝╚══════╝
-echo.
-echo    ╔════════════════════════════════════════════════════╗
-echo    ║        Personal WeChat Automation Service          ║
-echo    ║            Website: https://xysaiai.cn             ║
-echo    ║         Follow WeChat: XYS AI Video                ║
-echo    ╚════════════════════════════════════════════════════╝
-echo.
+echo ========================================================
 
 echo [INFO] Checking Runtime Environment...
 echo.
@@ -77,48 +60,79 @@ echo.
 
 REM Install Node.js dependencies
 if not exist "node_modules" (
-    echo Installing Node.js dependencies...
+    echo [INFO] Installing Node.js dependencies...
+    echo [DEBUG] Running: npm install
     npm install
     if errorlevel 1 (
         echo [ERROR] Failed to install Node.js dependencies
+        echo [DEBUG] Please check if package.json exists and network is available
+        echo [DEBUG] You can try manually running: npm install
         pause
         exit /b 1
     )
+    echo [OK] Node.js dependencies installed successfully
 )
 
 REM Install Python dependencies
-echo Checking Python dependencies...
+echo [INFO] Checking Python dependencies...
+echo [DEBUG] Testing: python -c "import wxauto"
 python -c "import wxauto" 2>nul
 if errorlevel 1 (
-    echo Installing wxauto dependencies...
+    echo [INFO] Installing wxauto dependencies...
+    echo [DEBUG] Running: pip install wxauto
     pip install wxauto
     if errorlevel 1 (
-        echo Trying with China mirror source...
+        echo [INFO] Trying with China mirror source...
+        echo [DEBUG] Running: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
         pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
         if errorlevel 1 (
             echo [ERROR] Failed to install wxauto
-            echo [FIX] Please manually run: pip install wxauto
+            echo [DEBUG] Manual installation commands:
+            echo [DEBUG]   pip install wxauto
+            echo [DEBUG]   pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
+            echo [DEBUG] Check Python and pip installation
             pause
             exit /b 1
         )
     )
+    echo [OK] wxauto installed successfully
+else
+    echo [OK] wxauto already installed
 )
 
 echo.
-echo    ╔═══════════════════════════════════════╗
-echo    ║         SERVICE STARTING              ║
-echo    ╚═══════════════════════════════════════╝
+echo ========================================================
+echo                    SERVICE STARTING
+echo ========================================================
 echo.
-echo [INFO] Service URL: http://localhost:3000
-echo [INFO] Configure this URL in your n8n node
+echo [INFO] Service will run on: http://localhost:3000
+echo [INFO] Configure this URL in your N8N WeChat node
+echo [INFO] Health check endpoint: http://localhost:3000/health
 echo.
-echo ================================================
-echo Press Ctrl+C to stop service
-echo ================================================
+echo ========================================================
+echo           Press Ctrl+C to stop service
+echo ========================================================
+echo.
+echo [DEBUG] Starting service with command: node index.js
+echo [DEBUG] If service fails to start, check:
+echo [DEBUG]   1. Node.js is properly installed
+echo [DEBUG]   2. index.js exists in current directory
+echo [DEBUG]   3. All dependencies are installed
 echo.
 
 REM Start service
 node index.js
+if errorlevel 1 (
+    echo.
+    echo [ERROR] Service failed to start!
+    echo [DEBUG] Check the error messages above
+    echo [DEBUG] Common issues:
+    echo [DEBUG]   - Port 3000 already in use
+    echo [DEBUG]   - Missing dependencies
+    echo [DEBUG]   - Node.js not properly installed
+    pause
+    exit /b 1
+)
 
 echo.
 echo [INFO] Service stopped
