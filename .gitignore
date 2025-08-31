@@ -1,7 +1,30 @@
-unified-message-service/.env
-!unified-message-service/.env.example
-unified-message-service/node_modules/
-unified-message-service/wxauto_logs/
+# Dependencies
+node_modules/
+npm-debug.log*
+
+# Build output
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# NPM package files
+*.tgz
+
+# Logs
+*.log
+
+# Project specific
 claude.md
 *.txt
 Docker*.bat
@@ -9,3 +32,4 @@ Docker*.bat
 repo.git/
 0.160.0
 **/E:N8N*
+unified-message-service/wxauto_logs/
