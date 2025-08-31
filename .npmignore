@@ -63,3 +63,8 @@ personal-wechat-service/
 *.backup.*
 *.simple.*
 *.bak
+
+# Exclude backup/simple files from dist directory specifically
+dist/**/*.backup.*
+dist/**/*.simple.*
+dist/**/*.bak
