@@ -71,6 +71,9 @@ if not exist "node_modules" (
         exit /b 1
     )
     echo [OK] Node.js dependencies installed successfully
+    echo.
+    echo [INFO] First-time setup completed. Press any key to start service...
+    pause >nul
 )
 
 REM Install Python dependencies
@@ -96,6 +99,9 @@ if errorlevel 1 (
         )
     )
     echo [OK] wxauto installed successfully
+    echo.
+    echo [INFO] Python dependencies setup completed. Continuing...
+    timeout /t 2 >nul
 else
     echo [OK] wxauto already installed
 )

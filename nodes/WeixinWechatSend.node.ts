@@ -154,39 +154,12 @@ async function startEmbeddedWechatService(): Promise<number> {
 					response: response.data
 				});
 			} else if (service === 'personal-wechat') {
-				// 个人微信自动化 - 代理到PC服务
-				const { personalWechatService } = req.body;
-				
-				if (!personalWechatService) {
-					return res.status(400).json({
-						success: false,
-						error: '请配置个人微信服务地址',
-						help: '需要在PC上下载并运行个人微信服务程序'
-					});
-				}
-
-				try {
-					console.log(`🔄 代理个人微信请求到: ${personalWechatService}`);
-					const response = await axios.post(`${personalWechatService}/send/text`, req.body, {
-						timeout: 30000,
-						headers: { 'Content-Type': 'application/json' }
-					});
-					
-					res.json({
-						success: true,
-						message: '个人微信消息发送成功',
-						response: response.data,
-						serviceUrl: personalWechatService
-					});
-				} catch (error: any) {
-					console.error('个人微信服务连接失败:', error.message);
-					res.status(500).json({
-						success: false,
-						error: `无法连接个人微信服务: ${error.message}`,
-						serviceUrl: personalWechatService,
-						help: '请确保个人微信服务已在PC上运行，并检查服务地址是否正确'
-					});
-				}
+				// 个人微信自动化 - 直接处理（不再使用嵌入式服务代理）
+				return res.status(400).json({
+					success: false,
+					error: '个人微信服务应该直接连接，不通过嵌入式服务',
+					help: '请在凭证中配置个人微信服务地址'
+				});
 			} else {
 				throw new Error('不支持的服务类型');
 			}
@@ -227,41 +200,12 @@ async function startEmbeddedWechatService(): Promise<number> {
 					response: response.data
 				});
 			} else if (service === 'personal-wechat') {
-				// 个人微信文件发送 - 代理到PC服务
-				const { personalWechatService } = req.body;
-				
-				if (!personalWechatService) {
-					return res.status(400).json({
-						success: false,
-						error: '请配置个人微信服务地址',
-						help: '需要在PC上下载并运行个人微信服务程序'
-					});
-				}
-
-				try {
-					console.log(`🔄 代理个人微信文件请求到: ${personalWechatService}`);
-					const response = await axios.post(`${personalWechatService}/send/file`, req.body, {
-						timeout: 120000, // 文件发送超时时间更长
-						headers: { 'Content-Type': 'application/json' }
-					});
-					
-					res.json({
-						success: true,
-						message: '个人微信文件发送成功',
-						filename,
-						response: response.data,
-						serviceUrl: personalWechatService
-					});
-				} catch (error: any) {
-					console.error('个人微信服务连接失败:', error.message);
-					res.status(500).json({
-						success: false,
-						error: `无法连接个人微信服务: ${error.message}`,
-						filename,
-						serviceUrl: personalWechatService,
-						help: '请确保个人微信服务已在PC上运行，并检查服务地址是否正确'
-					});
-				}
+				// 个人微信文件发送 - 直接处理（不再使用嵌入式服务代理）
+				return res.status(400).json({
+					success: false,
+					error: '个人微信服务应该直接连接，不通过嵌入式服务',
+					help: '请在凭证中配置个人微信服务地址'
+				});
 			} else {
 				throw new Error('不支持的服务类型');
 			}
@@ -426,14 +370,21 @@ async function requestWithAuth(
 	const credentials = await thisArg.getCredentials('weixinWechatApi');
 	let baseUrl = '';
 
-	// 总是使用嵌入式服务
-	try {
-		const servicePort = await ensureEmbeddedServiceRunning();
-		baseUrl = `http://localhost:${servicePort}`;
-		console.log(`🔧 使用嵌入式服务: ${baseUrl}`);
-	} catch (error) {
-		console.error('嵌入式服务启动失败:', error);
-		baseUrl = 'http://localhost:3000'; // 回退到默认端口
+	// 优先使用用户在凭证中配置的serviceUrl (解决Docker连接问题)
+	if (credentials?.serviceUrl) {
+		baseUrl = (credentials.serviceUrl as string).replace(/\/+$/, '');
+		console.log(`🔗 使用凭证配置的服务地址: ${baseUrl}`);
+	} else {
+		// 如果没有配置serviceUrl，才尝试使用嵌入式服务
+		try {
+			const servicePort = await ensureEmbeddedServiceRunning();
+			baseUrl = `http://localhost:${servicePort}`;
+			console.log(`🔧 使用嵌入式服务: ${baseUrl}`);
+		} catch (error) {
+			console.error('嵌入式服务启动失败:', error);
+			baseUrl = 'http://localhost:3000'; // 回退到默认端口
+			console.log(`↩️ 回退到默认端口: ${baseUrl}`);
+		}
 	}
 
 	const headers: { [key: string]: string } = {
@@ -472,12 +423,13 @@ async function requestWithAuth(
 	try {
 		return await thisArg.helpers.request(options);
 	} catch (error: any) {
-		// 如果是连接失败，尝试启动嵌入式服务
-		if (error.code === 'ECONNREFUSED' && baseUrl.includes('localhost:3000')) {
+		// 只有在没有用户配置serviceUrl且使用默认localhost时，才尝试启动嵌入式服务
+		if (error.code === 'ECONNREFUSED' && !credentials?.serviceUrl && baseUrl === 'http://localhost:3000') {
 			try {
-				console.log('检测到连接失败，尝试启动嵌入式服务...');
+				console.log('🔄 检测到连接失败，尝试启动嵌入式服务...');
 				const servicePort = await ensureEmbeddedServiceRunning();
 				options.url = options.url.replace('localhost:3000', `localhost:${servicePort}`);
+				console.log(`🔄 重试请求到嵌入式服务: ${options.url}`);
 				return await thisArg.helpers.request(options);
 			} catch (embeddedError) {
 				console.error('嵌入式服务启动失败:', embeddedError);
@@ -543,19 +495,6 @@ export class WeixinWechatSend implements INodeType {
 				},
 				placeholder: 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY',
 				description: '企业微信群机器人的Webhook地址 | 群设置 → 机器人 → 添加机器人',
-				required: true,
-			},
-			// 个人微信服务配置
-			{
-				displayName: '个人微信服务地址',
-				name: 'personalWechatService',
-				type: 'string',
-				default: 'http://localhost:3000',
-				displayOptions: {
-					show: { service: ['personal-wechat'] }
-				},
-				placeholder: 'http://localhost:3000',
-				description: '🖥️ 个人微信PC服务地址 | 需先下载并运行个人微信服务程序',
 				required: true,
 			},
 			{
@@ -920,10 +859,7 @@ export class WeixinWechatSend implements INodeType {
 						// 发送文本消息
 						const text = this.getNodeParameter('text', i) as string;
 						const requestBody: any = { service, text };
-						const personalWechatService = this.getNodeParameter('personalWechatService', i) as string;
 						const chatType = this.getNodeParameter('chatType', i) as string;
-						
-						requestBody.personalWechatService = personalWechatService;
 						requestBody.toType = chatType;
 						
 						if (chatType !== 'filehelper') {
@@ -983,10 +919,7 @@ export class WeixinWechatSend implements INodeType {
 					}
 					
 					// 添加个人微信特定参数
-					const personalWechatService = this.getNodeParameter('personalWechatService', i) as string;
 					const chatType = this.getNodeParameter('chatType', i) as string;
-					
-					requestBody.personalWechatService = personalWechatService;
 					requestBody.toType = chatType;
 					
 					if (chatType !== 'filehelper') {
