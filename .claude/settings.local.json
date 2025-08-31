@@ -81,7 +81,8 @@
       "Bash(cat:*)",
       "Bash(tree:*)",
       "Bash(__NEW_LINE__ rm -rf personal-wechat-service/ unified-message-service/)",
-      "Bash(__NEW_LINE__ echo \"✅ 服务目录已清理 (这些应该独立分发，不属于N8N插件)\")"
+      "Bash(__NEW_LINE__ echo \"✅ 服务目录已清理 (这些应该独立分发，不属于N8N插件)\")",
+      "Bash(copy iconswechat.svg distnodeswechat.svg)"
     ],
     "deny": [],
     "ask": []
