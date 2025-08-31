@@ -513,23 +513,23 @@ export class WeixinWechatSend implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'WeChat Service',
+				displayName: '微信服务类型',
 				name: 'service',
 				type: 'options',
-				default: 'enterprise-wechat-bot',
+				default: 'personal-wechat',
 				options: [
 					{
-						name: '🏢 企业微信机器人 (推荐)',
-						value: 'enterprise-wechat-bot',
-						description: '发送到企业微信群，无需IP白名单，稳定可靠',
+						name: '🙋‍♂️ 个人微信自动化 (推荐)',
+						value: 'personal-wechat',
+						description: '真实微信控制，功能全面！支持联系人/群聊/文件发送，使用面广',
 					},
 					{
-						name: '🙋‍♂️ 个人微信自动化',
-						value: 'personal-wechat',
-						description: '需要在PC上运行个人微信服务程序，支持真实微信发送',
+						name: '🏢 企业微信机器人',
+						value: 'enterprise-wechat-bot',
+						description: '简单易用，发送到企业微信群，无需额外部署',
 					},
 				],
-				description: '选择微信服务 | 关注"西羊石AI视频"获取API | 官网: https://xysaiai.cn/',
+				description: '💡 新用户建议：个人微信功能更全面 | 关注"西羊石AI视频"获取API | 官网: https://xysaiai.cn/',
 			},
 			// 企业微信webhook配置
 			{
@@ -559,7 +559,7 @@ export class WeixinWechatSend implements INodeType {
 				required: true,
 			},
 			{
-				displayName: 'ℹ️ 个人微信服务说明',
+				displayName: '🚀 个人微信服务部署 (3分钟完成)',
 				name: 'personalWechatNotice',
 				type: 'notice',
 				default: '',
@@ -569,7 +569,7 @@ export class WeixinWechatSend implements INodeType {
 				typeOptions: {
 					theme: 'info',
 				},
-				description: '🔗 下载个人微信服务：https://github.com/xysaiai/wechat-personal-service<br/>📥 解压到PC上运行，默认端口3001<br/>🐳 Docker用户请使用：http://host.docker.internal:3001<br/>☁️ 云端N8N用户请使用：http://您的PC公网IP:3001',
+				description: '📦 <b>1. 下载服务：</b><a href="https://github.com/Standed/n8n-nodes-weixin-wechat" target="_blank">GitHub仓库</a> → personal-wechat-service目录<br/>🖱️ <b>2. Windows一键启动：</b>双击 start.bat 即可 (自动安装依赖)<br/>🔌 <b>3. 配置地址：</b>本地 http://localhost:3001 | Docker: http://host.docker.internal:3001 | 云端: http://您的IP:3001',
 			},
 			// 企业微信消息类型配置
 			{
