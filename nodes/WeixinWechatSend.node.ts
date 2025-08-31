@@ -830,7 +830,7 @@ export class WeixinWechatSend implements INodeType {
 				let response: any;
 
 				if (service === 'enterprise-wechat-bot') {
-					// 企业微信处理
+					// 企业微信处理 - 直接调用webhook，不通过requestWithAuth避免路由到个人微信
 					const messageType = this.getNodeParameter('enterpriseMessageType', i) as string;
 					const webhook = this.getNodeParameter('enterpriseWebhook', i) as string;
 
@@ -841,16 +841,36 @@ export class WeixinWechatSend implements INodeType {
 						messageContent = this.getNodeParameter('enterpriseText', i) as string;
 					}
 
-					const requestBody: any = {
-						service,
-						messageType,
-						webhook,
-						text: messageContent, // 保持兼容性
-						enterpriseText: messageType === 'text' ? messageContent : '',
-						enterpriseMarkdown: messageType === 'markdown' ? messageContent : ''
+					// 构建企业微信标准payload
+					const payload: any = {
+						msgtype: messageType
 					};
 
-					response = await requestWithAuth(this, '/send/text', 'POST', requestBody);
+					if (messageType === 'markdown') {
+						payload.markdown = {
+							content: messageContent
+						};
+					} else {
+						payload.text = {
+							content: messageContent
+						};
+					}
+
+					// 直接调用企业微信webhook
+					response = await this.helpers.request({
+						method: 'POST',
+						url: webhook,
+						json: payload,
+						timeout: 30000
+					});
+
+					// 格式化返回结果保持一致性
+					response = {
+						success: true,
+						message: `企业微信${messageType === 'markdown' ? 'Markdown' : '文本'}消息发送成功`,
+						messageType: messageType,
+						webhook_response: response
+					};
 				} else if (service === 'personal-wechat') {
 					// 个人微信处理
 					const resource = this.getNodeParameter('resource', i) as string;
