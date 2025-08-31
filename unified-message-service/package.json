@@ -1,0 +1,37 @@
+{
+  "name": "unified-message-service",
+  "version": "1.0.0",
+  "description": "Unified message service supporting WeChat Enterprise and Personal WeChat via WxAuto",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "docker:build": "docker build -t unified-message-service .",
+    "docker:run": "docker run -d -p 3000:3000 --name message-service unified-message-service"
+  },
+  "keywords": [
+    "wechat",
+    "enterprise-wechat",
+    "wxauto",
+    "message",
+    "push",
+    "n8n"
+  ],
+  "author": "XYS",
+  "license": "MIT",
+  "dependencies": {
+    "@wechatferry/puppet": "^0.0.26",
+    "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "form-data": "^4.0.4",
+    "multer": "^2.0.2",
+    "wechaty": "^1.20.2",
+    "wechaty-puppet-padlocal": "^1.13.0",
+    "wechaty-puppet-wechat": "^1.18.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
