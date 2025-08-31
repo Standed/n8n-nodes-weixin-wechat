@@ -24,16 +24,16 @@ export class WeixinWechatApi implements ICredentialType {
 			displayName: '个人微信服务地址 (可选)',
 			name: 'serviceUrl',
 			type: 'string',
-			default: 'http://localhost:3001',
-			placeholder: 'http://localhost:3001',
+			default: 'http://localhost:3000',
+			placeholder: 'http://localhost:3000',
 			required: false,
-			description: '📱 仅个人微信功能需要此配置 | 本地: http://localhost:3001 | Docker: http://host.docker.internal:3001 | 云端: http://您的IP:3001 | 🏢 企业微信用户可跳过',
+			description: '📱 仅个人微信功能需要此配置 | 本地: http://localhost:3000 | Docker: http://host.docker.internal:3000 | 云端: http://您的IP:3000 | 🏢 企业微信用户可跳过',
 		},
 	];
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: '={{$credentials.serviceUrl || "http://localhost:3001"}}',
+			baseURL: '={{$credentials.serviceUrl || "http://localhost:3000"}}',
 			url: '/health',
 			method: 'GET',
 		},

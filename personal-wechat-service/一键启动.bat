@@ -109,7 +109,7 @@ echo    ╔═══════════════════════
 echo    ║         SERVICE STARTING              ║
 echo    ╚═══════════════════════════════════════╝
 echo.
-echo [INFO] Service URL: http://localhost:3001
+echo [INFO] Service URL: http://localhost:3000
 echo [INFO] Configure this URL in your n8n node
 echo.
 echo ================================================
