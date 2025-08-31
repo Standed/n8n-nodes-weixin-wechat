@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  wechat-service:
+    build: .
+    container_name: wechat-service
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # 企业微信配置（需要用户修改）
+      - ENTERPRISE_WECHAT_BOT_WEBHOOK=https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=YOUR_KEY_HERE
+      # 个人微信配置
+      - ENABLE_WXAUTO_WECHAT=true
+      - PYTHON_PATH=python3
+    volumes:
+      - ./logs:/app/logs
+      - ./wxauto_logs:/app/wxauto_logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+  # 可选：添加nginx反向代理（如果需要HTTPS）
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: wechat-nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   depends_on:
+  #     - wechat-service
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   restart: unless-stopped
