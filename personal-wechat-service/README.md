@@ -77,6 +77,18 @@ PORT=3000  # 自定义端口
 
 ### 云端N8N（需要内网穿透）
 推荐使用内网穿透工具：
+
+**🌟 Cloudflare Tunnel（推荐）**：
+- **优势**：免费、稳定、安全、无需开放端口
+- **安装**：下载 [cloudflared](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/create-remote-tunnel/)
+- **配置步骤**：
+  1. 注册Cloudflare账户
+  2. `cloudflared tunnel create wechat-service`
+  3. `cloudflared tunnel route dns wechat-service your-domain.com`
+  4. `cloudflared tunnel run wechat-service`
+- **N8N配置**：`https://your-domain.com`
+
+**其他选择**：
 - **ngrok**: `ngrok http 3000` → 使用生成的HTTPS地址
 - **frp**: 自建服务器穿透 → 使用您的域名地址  
 - **NATAPP**: 国内用户，速度更快
