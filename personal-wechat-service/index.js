@@ -186,6 +186,26 @@ app.get('/status', async (req, res) => {
     }
 });
 
+// 🔒 API Key验证中间件 - 所有发送功能都需要验证
+app.use('/send/*', (req, res, next) => {
+    const apiKey = req.headers['x-api-key'];
+    
+    if (!apiKey || apiKey.trim() === '') {
+        log(`❌ 缺少API Key，拒绝请求: ${req.path}`);
+        return res.status(401).json({
+            success: false,
+            error: '需要API Key才能使用个人微信功能！',
+            help: '👉 获取方式：关注公众号"西羊石AI视频"回复"API"获取密钥',
+            code: 'MISSING_API_KEY'
+        });
+    }
+    
+    // TODO: 这里可以添加真正的API Key验证逻辑（调用西羊石AI服务器验证）
+    // 目前只检查是否存在，确保用户必须获取API Key
+    log(`🔑 API Key验证通过: ${apiKey.substring(0, 8)}...`);
+    next();
+});
+
 // 发送文本消息
 app.post('/send/text', async (req, res) => {
     try {

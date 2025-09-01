@@ -368,6 +368,16 @@ async function requestWithAuth(
 	body?: any,
 ) {
 	const credentials = await thisArg.getCredentials('weixinWechatApi');
+	
+	// 🔒 强制API Key检查 - 防止用户绕过公众号获取步骤
+	if (!credentials?.apiKey || String(credentials.apiKey).trim() === '') {
+		throw new NodeOperationError(
+			thisArg.getNode(),
+			`❌ 个人微信功能需要API Key！👉 获取方式：关注公众号【西羊石AI视频】，回复【API】`,
+			{ description: '必须获取API Key才能使用个人微信自动化功能' }
+		);
+	}
+
 	let baseUrl = '';
 
 	// 优先使用用户在凭证中配置的serviceUrl (解决Docker连接问题)
