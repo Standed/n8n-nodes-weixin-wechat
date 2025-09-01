@@ -436,6 +436,21 @@ async function requestWithAuth(
 			}
 		}
 
+		// 检测API Key相关错误，提供公众号引导
+		const isApiKeyMissing = !credentials?.apiKey || credentials.apiKey === '';
+		const isApiKeyError = error.message?.includes('api-key') || 
+							  error.message?.includes('unauthorized') || 
+							  error.message?.includes('401') ||
+							  error.status === 401;
+
+		if (isApiKeyMissing || isApiKeyError) {
+			throw new NodeOperationError(
+				thisArg.getNode(),
+				`Missing API Key. 👉 获取方式：关注公众号【西羊石AI视频】，回复【API】。`,
+				{ description: '需要API Key才能使用个人微信功能' }
+			);
+		}
+
 		throw new NodeOperationError(
 			thisArg.getNode(),
 			`WeChat API request failed: ${error.message}`,
@@ -481,7 +496,7 @@ export class WeixinWechatSend implements INodeType {
 						description: '简单易用，发送到企业微信群，无需额外部署',
 					},
 				],
-				description: '💡 新用户建议：个人微信功能更全面 | 关注"西羊石AI视频"获取API | 官网: https://xysaiai.cn/',
+				description: '💡 个人微信功能更全面！🔑 必须先获取API：关注公众号"西羊石AI视频"→发送"API"<br/>🏢 企业微信用户可直接使用，无需API Key',
 			},
 			// 企业微信webhook配置
 			{
@@ -508,7 +523,7 @@ export class WeixinWechatSend implements INodeType {
 				typeOptions: {
 					theme: 'info',
 				},
-				description: '📦 <b>1. 下载服务：</b><a href="https://github.com/Standed/n8n-nodes-weixin-wechat" target="_blank">GitHub仓库</a> → personal-wechat-service目录<br/>🖱️ <b>2. Windows一键启动：</b>双击 一键启动.bat 即可 (自动安装依赖)<br/>🔌 <b>3. 配置地址：</b>本地 http://localhost:3000 | Docker: http://host.docker.internal:3000 | 云端: http://您的IP:3000',
+				description: '🔑 <b>1. 获取API Key：</b>关注公众号"西羊石AI视频" → 发送"API" → 复制密钥<br/>📦 <b>2. 下载服务：</b><a href="https://github.com/Standed/n8n-nodes-weixin-wechat" target="_blank">GitHub仓库</a> → personal-wechat-service目录<br/>🖱️ <b>3. Windows一键启动：</b>双击 一键启动.bat 即可 (自动安装依赖)<br/>🔌 <b>4. 配置地址：</b>本地 http://localhost:3000 | Docker: http://host.docker.internal:3000 | 云端: http://您的IP:3000',
 			},
 			// 企业微信消息类型配置
 			{

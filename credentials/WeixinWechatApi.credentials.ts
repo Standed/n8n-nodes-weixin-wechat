@@ -18,7 +18,7 @@ export class WeixinWechatApi implements ICredentialType {
 			default: '',
 			placeholder: '请输入从公众号获取的API密钥',
 			required: true,
-			description: '🔑 获取方式：关注公众号"西羊石AI视频" → 发送"API" → 复制密钥到此处 | 官网: https://xysaiai.cn/',
+			description: '🔑 获取步骤：①关注公众号"西羊石AI视频" ②发送"API" ③复制密钥到此处 | 必须获取才能使用个人微信功能！',
 		},
 		{
 			displayName: '个人微信服务地址 (可选)',
