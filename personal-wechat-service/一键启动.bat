@@ -78,6 +78,8 @@ if not exist "node_modules" (
 
 REM Install Python dependencies
 echo [INFO] Checking Python dependencies...
+
+REM Check wxauto
 echo [DEBUG] Testing: python -c "import wxauto"
 python -c "import wxauto" 2>nul
 if errorlevel 1 (
@@ -99,12 +101,37 @@ if errorlevel 1 (
         )
     )
     echo [OK] wxauto installed successfully
-    echo.
-    echo [INFO] Python dependencies setup completed. Continuing...
-    timeout /t 2 >nul
 else
     echo [OK] wxauto already installed
 )
+
+REM Check requests
+echo [DEBUG] Testing: python -c "import requests"
+python -c "import requests" 2>nul
+if errorlevel 1 (
+    echo [INFO] Installing requests library...
+    echo [DEBUG] Running: pip install requests
+    pip install requests
+    if errorlevel 1 (
+        echo [INFO] Trying with China mirror source...
+        echo [DEBUG] Running: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
+        pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
+        if errorlevel 1 (
+            echo [ERROR] Failed to install requests
+            echo [DEBUG] Manual installation commands:
+            echo [DEBUG]   pip install requests
+            pause
+            exit /b 1
+        )
+    )
+    echo [OK] requests installed successfully
+else
+    echo [OK] requests already installed
+)
+
+echo.
+echo [INFO] Python dependencies setup completed. Continuing...
+timeout /t 2 >nul
 
 echo.
 echo ========================================================

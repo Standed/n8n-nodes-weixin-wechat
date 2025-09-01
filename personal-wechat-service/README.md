@@ -115,15 +115,36 @@ POST /send/text
 }
 ```
 
-### 发送文件
+### 发送文件 (完整支持)
 ```
 POST /send/file
+Content-Type: application/json
+x-api-key: YOUR_API_KEY
+
 {
   "filename": "文件名",
-  "url": "文件URL",
-  "toType": "filehelper|contact|room"
+  "url": "文件URL (可选)",
+  "fileData": {
+    "data": "base64编码的文件数据 (可选)",
+    "fileName": "原始文件名",
+    "mimeType": "文件MIME类型"
+  },
+  "toType": "filehelper|contact|room",
+  "toIds": ["联系人1", "联系人2"]
 }
 ```
+
+**支持的文件发送方式**：
+1. **URL方式**：提供`url`参数，自动下载并发送
+2. **二进制数据**：提供`fileData`对象，直接发送二进制数据
+
+**支持的文件类型**：
+- 图片：jpg, png, gif, webp
+- 文档：pdf, doc, docx, txt, xlsx
+- 视频：mp4, avi, mov
+- 音频：mp3, wav
+- 压缩包：zip, rar, 7z
+- 其他任意格式
 
 ## 📋 功能特性
 
@@ -131,9 +152,12 @@ POST /send/file
 - ✅ 健康检查和环境检测
 - ✅ 真实微信客户端控制（基于wxauto）
 - ✅ 文本消息发送
+- ✅ 文件消息发送（图片、文档、视频等）
+- ✅ URL文件下载发送
+- ✅ 二进制数据文件发送
 - ✅ 批量发送和间隔控制
 - ✅ 文件传输助手支持
-- 🚧 文件发送（开发中）
+- ✅ 智能临时文件清理
 - ⚠️ Windows平台优先支持
 
 ## 🛠️ 技术架构
@@ -170,11 +194,23 @@ POST /send/file
 - API Key: [从公众号获取]
 - 个人微信服务地址: `http://localhost:3000`
 
-### 3. 测试发送
-使用N8N工作流测试：
-- 发送到文件传输助手
-- 发送给指定联系人
-- 批量发送
+### 3. 功能测试
+**API测试**：
+```bash
+# 测试完整HTTP API接口
+python test_api_file_send.py
+```
+
+**功能测试**：
+```bash
+# 测试文件发送核心功能
+python test_file_send.py
+```
+
+**N8N工作流测试**：
+- 发送文本到文件传输助手
+- 发送图片给指定联系人
+- 批量文件发送
 
 ## 📞 技术支持
 
