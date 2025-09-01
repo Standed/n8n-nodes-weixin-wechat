@@ -56,6 +56,14 @@ if errorlevel 1 (
 
 echo.
 echo [INFO] Preparing Service Environment...
+if not exist "node_modules" (
+    echo [NOTICE] This appears to be the first run. The setup will:
+    echo [NOTICE]   1. Install Node.js dependencies automatically
+    echo [NOTICE]   2. Install Python dependencies automatically  
+    echo [NOTICE]   3. Start the service directly
+    echo [NOTICE] This process is fully automated and may take 1-2 minutes.
+    echo.
+)
 echo.
 
 REM Install Node.js dependencies
@@ -71,9 +79,8 @@ if not exist "node_modules" (
         exit /b 1
     )
     echo [OK] Node.js dependencies installed successfully
-    echo.
-    echo [INFO] First-time setup completed. Press any key to start service...
-    pause >nul
+    echo [INFO] Continuing with Python dependencies setup...
+    timeout /t 2 >nul
 )
 
 REM Install Python dependencies
