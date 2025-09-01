@@ -41,13 +41,25 @@
 2. 发送：**"API"**
 3. 复制收到的密钥
 
-### 第3步：下载PC服务 (2分钟)
+### 第3步：准备系统环境
+**⚠️ 微信版本要求**：
+- ✅ **推荐版本**：微信PC版 3.9.8 - 3.9.12 
+- ❌ **不支持**：微信4.0版本（暂不兼容）
+- 📥 **下载地址**：
+  - [微信官网](https://pc.weixin.qq.com/?lang=en_US) 
+  - [百度网盘 微信3.9.12版本](https://pan.baidu.com/s/1j2p3NTdjSexbQVPQD3Wopg) 提取码: d7j4
+
+**系统要求**：
+- Windows 10+ 或 Windows Server 2016+
+- Python 3.9-3.12 (会自动安装)
+
+### 第4步：下载PC服务 (2分钟)
 1. 访问：https://github.com/Standed/n8n-nodes-weixin-wechat
 2. 下载到Windows电脑，进入 `personal-wechat-service` 目录
 3. **双击运行**：`一键启动.bat`
 4. 如提示缺少环境，会自动打开下载页面
 
-### 第4步：配置N8N
+### 第5步：配置N8N
 1. 新建凭据 → **西羊石AI微信插件 API**
 2. **API Key**：粘贴第2步获取的密钥
 3. **个人微信服务地址**：`http://localhost:3000`
@@ -96,9 +108,33 @@
 ### Docker用户
 **个人微信服务地址**：`http://host.docker.internal:3000`
 
-### 云端N8N用户  
-**个人微信服务地址**：`http://您的PC公网IP:3000`
-> 需要开放防火墙3000端口
+### 云端N8N用户（重要）🌐
+**问题**：云端N8N无法直接访问您本地Windows的3000端口
+
+**💡 解决方案（3选1）**：
+
+#### 方案1：ngrok（推荐新手）⭐
+1. 下载：https://ngrok.com/download
+2. 运行：`ngrok http 3000`
+3. 复制生成的URL，如：`https://abc123.ngrok.io`
+4. N8N凭证中设置：`https://abc123.ngrok.io`
+
+#### 方案2：frp（推荐技术用户）⭐⭐⭐
+1. 下载：https://github.com/fatedier/frp/releases
+2. 配置frpc.ini连接到您的服务器
+3. 启动：`frpc.exe -c frpc.ini`
+4. N8N凭证中设置您的域名地址
+
+#### 方案3：NATAPP（国内用户）⭐⭐
+1. 注册：https://natapp.cn/
+2. 下载客户端，配置tunnel
+3. 启动隧道映射到本地3000端口
+4. 使用分配的域名地址
+
+**📋 选择建议**：
+- **测试使用**：ngrok免费版
+- **生产使用**：frp自建服务器
+- **国内用户**：NATAPP速度更快
 
 ### 批量发送设置
 - **发送间隔**：建议3-5秒（避免限制）
