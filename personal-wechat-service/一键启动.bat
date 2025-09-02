@@ -103,6 +103,19 @@ if errorlevel 1 (
 echo.
 echo [INFO] 准备安装依赖包...
 
+REM 检查端口是否被占用
+netstat -ano | findstr :3000 >nul 2>&1
+if not errorlevel 1 (
+    echo [WARN] 端口 3000 已被占用
+    echo [ACTION] 正在尝试释放端口...
+    for /f "tokens=5" %%p in ('netstat -ano ^| findstr :3000') do (
+        echo [INFO] 停止占用进程 PID: %%p
+        taskkill /PID %%p /F >nul 2>&1
+    )
+    timeout /t 2 >nul
+    echo [OK] 端口检查完成
+)
+
 REM 检查并安装 Node.js 依赖
 if not exist "node_modules" (
     echo [INFO] 首次运行，正在安装 Node.js 依赖包...

@@ -103,6 +103,19 @@ if errorlevel 1 (
 echo.
 echo [INFO] Preparing to install dependencies...
 
+REM Check port availability
+netstat -ano | findstr :3000 >nul 2>&1
+if not errorlevel 1 (
+    echo [WARN] Port 3000 is already in use
+    echo [ACTION] Attempting to release port...
+    for /f "tokens=5" %%p in ('netstat -ano ^| findstr :3000') do (
+        echo [INFO] Stopping process PID: %%p
+        taskkill /PID %%p /F >nul 2>&1
+    )
+    timeout /t 2 >nul
+    echo [OK] Port check completed
+)
+
 REM Check and install Node.js dependencies
 if not exist "node_modules" (
     echo [INFO] First run detected, installing Node.js dependencies...
