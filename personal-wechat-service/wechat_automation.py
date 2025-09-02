@@ -40,6 +40,14 @@ def get_safe_filename(filename):
     if not filename:
         return "file"
     
+    # 首先提取文件名部分（移除路径）
+    # 处理Unix和Windows路径
+    filename = os.path.basename(filename)
+    
+    # 如果basename后为空，使用默认名称
+    if not filename:
+        return "file"
+    
     # 移除Windows文件名中的非法字符
     invalid_chars = '<>:"/\\|?*'
     safe_name = ''.join(c for c in filename if c not in invalid_chars)
@@ -251,7 +259,7 @@ def send_text_message(text, to_type, to_ids, batch_options=None):
             'timestamp': datetime.now().isoformat()
         }
 
-def send_file_message(url, filename, file_data, to_type, to_ids):
+def send_file_message(url, filename, file_data, to_type, to_ids, caption=None):
     """发送文件消息 - 完整实现版本"""
     temp_dir = None
     try:
@@ -304,11 +312,17 @@ def send_file_message(url, filename, file_data, to_type, to_ids):
             wx.ChatWith('文件传输助手')
             wx.SendFiles(local_file_path)
             
+            # 如果有说明文字，发送caption
+            if caption and caption.strip():
+                log(f"发送说明文字: {caption}")
+                time.sleep(1)  # 等待文件发送完成
+                wx.SendMsg(caption.strip())
+            
             results.append({
                 'target': '文件传输助手',
                 'filename': actual_filename,
                 'success': True,
-                'message': '文件发送成功',
+                'message': '文件发送成功' + (f'，附带说明: {caption[:20]}...' if caption and len(caption) > 20 else f'，附带说明: {caption}' if caption else ''),
                 'file_size': os.path.getsize(local_file_path),
                 'timestamp': datetime.now().isoformat()
             })
@@ -329,11 +343,17 @@ def send_file_message(url, filename, file_data, to_type, to_ids):
                     # 发送文件
                     wx.SendFiles(local_file_path)
                     
+                    # 如果有说明文字，发送caption
+                    if caption and caption.strip():
+                        log(f"发送说明文字给 {target}: {caption}")
+                        time.sleep(1)  # 等待文件发送完成
+                        wx.SendMsg(caption.strip())
+                    
                     results.append({
                         'target': target,
                         'filename': actual_filename,
                         'success': True,
-                        'message': '文件发送成功',
+                        'message': '文件发送成功' + (f'，附带说明: {caption[:20]}...' if caption and len(caption) > 20 else f'，附带说明: {caption}' if caption else ''),
                         'file_size': os.path.getsize(local_file_path),
                         'timestamp': datetime.now().isoformat()
                     })
@@ -470,7 +490,8 @@ def main():
                 data.get('filename'),
                 data.get('fileData'),
                 data.get('toType'),
-                data.get('toIds')
+                data.get('toIds'),
+                data.get('caption')
             )
             print(json.dumps(result, ensure_ascii=False))
             

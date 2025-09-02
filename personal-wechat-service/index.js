@@ -287,7 +287,7 @@ app.post('/send/text', async (req, res) => {
 // 发送文件消息
 app.post('/send/file', async (req, res) => {
     try {
-        const { url, filename, fileData, toType, toIds } = req.body;
+        const { url, filename, fileData, toType, toIds, caption } = req.body;
         log(`📎 收到文件发送请求: ${filename} -> ${toType}`);
 
         // 调用Python脚本进行真实的微信文件发送
@@ -296,7 +296,8 @@ app.post('/send/file', async (req, res) => {
             filename,
             fileData,
             toType,
-            toIds
+            toIds,
+            caption
         });
 
         if (result.success) {
