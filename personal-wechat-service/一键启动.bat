@@ -1,8 +1,16 @@
 @echo off
-chcp 65001 >nul
-title XYS WeChat Personal Service - 一键自动化部署
+
+REM 安全的编码设置
+for /f "tokens=2 delims=:" %%i in ('chcp') do set current_cp=%%i
+set current_cp=%current_cp: =%
+if not "%current_cp%"=="65001" (
+    chcp 65001 >nul 2>&1
+)
+
+title XYS WeChat Personal Service
 color 0A
 cls
+
 echo.
 echo ========================================================
 echo            西羊石AI 个人微信自动化服务
@@ -15,227 +23,205 @@ echo          技术支持: WeChat XYS AI Video
 echo.
 echo ========================================================
 echo.
-echo [INFO] 🚀 开始一键自动化部署...
-echo [INFO] 本脚本将自动检查并安装所需环境，全程自动化，请耐心等待
+
+REM 确保在正确目录
+cd /d "%~dp0"
+
+echo [INFO] 检查运行环境...
+echo [DEBUG] 当前目录: %CD%
 echo.
 
-:check_winget
-echo [INFO] 正在检查Windows包管理器...
-where winget >nul 2>&1
-if errorlevel 1 (
-    echo [WARN] Windows包管理器(winget)不可用
-    echo [INFO] 将使用传统安装方式
-    set "AUTO_INSTALL=false"
-) else (
-    echo [OK] Windows包管理器可用，启用自动安装模式
-    set "AUTO_INSTALL=true"
+REM 检查关键文件
+if not exist "index.js" (
+    echo [ERROR] 未找到 index.js 文件
+    echo [ERROR] 请确保脚本在 personal-wechat-service 目录中运行
+    echo [DEBUG] 当前路径: %CD%
+    echo.
+    echo 按任意键退出...
+    pause >nul
+    exit /b 1
 )
-echo.
 
-:check_nodejs
-echo [INFO] 检查Node.js环境...
+if not exist "package.json" (
+    echo [ERROR] 未找到 package.json 文件  
+    echo [ERROR] 请确保脚本在 personal-wechat-service 目录中运行
+    echo [DEBUG] 当前路径: %CD%
+    echo.
+    echo 按任意键退出...
+    pause >nul
+    exit /b 1
+)
+
+echo [OK] 找到必要文件: index.js, package.json
+
+REM 检查 Node.js
+echo [INFO] 检查 Node.js 环境...
 node --version >nul 2>&1
 if errorlevel 1 (
-    echo [WARN] Node.js未安装，正在自动安装...
-    if "%AUTO_INSTALL%"=="true" (
-        echo [INFO] 使用winget自动安装Node.js...
-        winget install OpenJS.NodeJS --accept-source-agreements --accept-package-agreements
-        if errorlevel 1 (
-            echo [ERROR] 自动安装失败，开始手动安装流程...
-            goto manual_nodejs
-        ) else (
-            echo [OK] Node.js安装完成，正在验证...
-            goto check_nodejs
-        )
-    ) else (
-        goto manual_nodejs
-    )
-) else (
-    for /f "tokens=*" %%v in ('node --version') do set NODE_VERSION=%%v
-    echo [OK] Node.js已安装: %NODE_VERSION%
+    echo [WARN] 未检测到 Node.js
+    echo [ACTION] 正在为您打开 Node.js 官方下载页面...
+    echo [NOTICE] 请下载并安装 Node.js，安装完成后重新运行此脚本
+    echo.
+    start https://nodejs.org/
+    echo 按任意键退出...
+    pause >nul
+    exit /b 1
 )
-goto check_python
 
-:manual_nodejs
-echo [INFO] 正在为您打开Node.js官方下载页面...
-echo [INFO] 请下载并安装Node.js，安装完成后本脚本将自动继续
-start https://nodejs.org/
-echo [INFO] 等待Node.js安装完成...
-echo [INFO] 安装完成后请按任意键继续，脚本将自动检测...
-pause >nul
-goto check_nodejs
+for /f "tokens=*" %%v in ('node --version') do set NODE_VERSION=%%v
+echo [OK] Node.js 已安装: %NODE_VERSION%
 
-:check_python
-echo [INFO] 检查Python环境...
+REM 检查 Python
+echo [INFO] 检查 Python 环境...
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [WARN] Python未安装，正在自动安装...
-    if "%AUTO_INSTALL%"=="true" (
-        echo [INFO] 使用winget自动安装Python...
-        winget install Python.Python.3.12 --accept-source-agreements --accept-package-agreements
-        if errorlevel 1 (
-            echo [ERROR] 自动安装失败，开始手动安装流程...
-            goto manual_python
-        ) else (
-            echo [OK] Python安装完成，正在验证...
-            goto check_python
-        )
-    ) else (
-        goto manual_python
-    )
-) else (
-    for /f "tokens=*" %%v in ('python --version') do set PYTHON_VERSION=%%v
-    echo [OK] Python已安装: %PYTHON_VERSION%
+    echo [WARN] 未检测到 Python
+    echo [ACTION] 正在为您打开 Python 官方下载页面...
+    echo [NOTICE] 请下载并安装 Python
+    echo [IMPORTANT] 安装时请务必勾选 "Add Python to PATH" 选项
+    echo.
+    start https://python.org/downloads/
+    echo 按任意键退出...
+    pause >nul
+    exit /b 1
 )
-goto check_wechat
 
-:manual_python
-echo [INFO] 正在为您打开Python官方下载页面...
-echo [INFO] 请下载并安装Python，记得勾选"Add Python to PATH"
-start https://python.org/downloads/
-echo [INFO] 等待Python安装完成...
-echo [INFO] 安装完成后请按任意键继续，脚本将自动检测...
-pause >nul
-goto check_python
+for /f "tokens=*" %%v in ('python --version') do set PYTHON_VERSION=%%v
+echo [OK] Python 已安装: %PYTHON_VERSION%
 
-:check_wechat
+REM 检查微信客户端（可选）
 echo [INFO] 检查微信客户端状态...
 tasklist /fi "imagename eq wechat.exe" 2>nul | find "wechat.exe" >nul
 if errorlevel 1 (
-    echo [WARN] 未检测到微信客户端运行
-    echo [INFO] 请启动并登录微信PC客户端
-    echo [INFO] 服务将继续启动，但需要微信客户端才能正常工作
-    echo [INFO] 3秒后继续...
-    timeout /t 3 >nul
+    echo [NOTICE] 未检测到微信客户端运行
+    echo [NOTICE] 建议启动并登录微信PC客户端以获得最佳体验
+    echo [NOTICE] 服务可以正常启动，但需要微信客户端才能发送消息
 ) else (
     echo [OK] 微信客户端已运行
 )
 
 echo.
-echo [INFO] 🔧 开始准备服务环境...
-if not exist "node_modules" (
-    echo [NOTICE] 检测到首次运行，将自动执行以下操作：
-    echo [NOTICE]   1. 安装Node.js依赖包
-    echo [NOTICE]   2. 安装Python依赖库
-    echo [NOTICE]   3. 启动微信自动化服务
-    echo [NOTICE] 整个过程全自动，预计耗时1-2分钟
-    echo.
-)
+echo [INFO] 准备安装依赖包...
 
-:install_nodejs_deps
-echo [INFO] 安装Node.js依赖...
+REM 检查并安装 Node.js 依赖
 if not exist "node_modules" (
-    echo [DEBUG] 执行: npm install
+    echo [INFO] 首次运行，正在安装 Node.js 依赖包...
+    echo [DEBUG] 执行命令: npm install
     npm install
     if errorlevel 1 (
-        echo [ERROR] Node.js依赖安装失败
-        echo [DEBUG] 可能的解决方案：
-        echo [DEBUG]   1. 检查网络连接
-        echo [DEBUG]   2. 尝试切换npm镜像: npm config set registry https://registry.npmmirror.com
-        echo [DEBUG]   3. 手动运行: npm install
-        echo [INFO] 5秒后退出，请解决问题后重新运行脚本...
-        timeout /t 5 >nul
+        echo [ERROR] Node.js 依赖包安装失败
+        echo [SOLUTION] 可能的解决方案:
+        echo [SOLUTION]   1. 检查网络连接是否正常
+        echo [SOLUTION]   2. 尝试使用国内镜像: npm config set registry https://registry.npmmirror.com
+        echo [SOLUTION]   3. 手动运行: npm install
+        echo.
+        echo 按任意键退出...
+        pause >nul
         exit /b 1
     )
-    echo [OK] Node.js依赖安装成功
-    echo [INFO] 继续安装Python依赖...
-    timeout /t 2 >nul
+    echo [OK] Node.js 依赖包安装成功
+) else (
+    echo [OK] Node.js 依赖包已存在，跳过安装
 )
 
-:install_python_deps
-echo [INFO] 检查Python依赖...
-
-REM Check wxauto
-echo [DEBUG] 检测wxauto库...
-python -c "import wxauto" 2>nul
+REM 检查并安装 Python 依赖 - wxauto
+echo [INFO] 检查 Python 库: wxauto...
+python -c "import wxauto" >nul 2>&1
 if errorlevel 1 (
-    echo [INFO] 安装wxauto库...
-    echo [DEBUG] 执行: pip install wxauto
+    echo [INFO] wxauto 库未安装，正在安装...
+    echo [DEBUG] 执行命令: pip install wxauto
     pip install wxauto
     if errorlevel 1 (
-        echo [INFO] 使用清华镜像源重试...
-        echo [DEBUG] 执行: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
+        echo [INFO] 使用清华大学镜像源重试...
+        echo [DEBUG] 执行命令: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
         pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
         if errorlevel 1 (
-            echo [ERROR] wxauto安装失败
-            echo [DEBUG] 手动安装命令：
-            echo [DEBUG]   pip install wxauto
-            echo [DEBUG] 或使用镜像源：
-            echo [DEBUG]   pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
-            echo [INFO] 5秒后退出，请解决问题后重新运行脚本...
-            timeout /t 5 >nul
+            echo [ERROR] wxauto 库安装失败
+            echo [SOLUTION] 手动安装命令:
+            echo [SOLUTION]   pip install wxauto
+            echo [SOLUTION]   或使用镜像: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple wxauto
+            echo.
+            echo 按任意键退出...
+            pause >nul
             exit /b 1
         )
     )
-    echo [OK] wxauto安装成功
+    echo [OK] wxauto 库安装成功
 ) else (
-    echo [OK] wxauto已安装
+    echo [OK] wxauto 库已安装
 )
 
-REM Check requests
-echo [DEBUG] 检测requests库...
-python -c "import requests" 2>nul
+REM 检查并安装 Python 依赖 - requests
+echo [INFO] 检查 Python 库: requests...
+python -c "import requests" >nul 2>&1
 if errorlevel 1 (
-    echo [INFO] 安装requests库...
-    echo [DEBUG] 执行: pip install requests
+    echo [INFO] requests 库未安装，正在安装...
+    echo [DEBUG] 执行命令: pip install requests
     pip install requests
     if errorlevel 1 (
-        echo [INFO] 使用清华镜像源重试...
-        echo [DEBUG] 执行: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
+        echo [INFO] 使用清华大学镜像源重试...
+        echo [DEBUG] 执行命令: pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
         pip install -i https://pypi.tuna.tsinghua.edu.cn/simple requests
         if errorlevel 1 (
-            echo [ERROR] requests安装失败
-            echo [DEBUG] 手动安装命令: pip install requests
-            echo [INFO] 5秒后退出，请解决问题后重新运行脚本...
-            timeout /t 5 >nul
+            echo [ERROR] requests 库安装失败
+            echo [SOLUTION] 手动安装命令:
+            echo [SOLUTION]   pip install requests
+            echo.
+            echo 按任意键退出...
+            pause >nul
             exit /b 1
         )
     )
-    echo [OK] requests安装成功
+    echo [OK] requests 库安装成功
 ) else (
-    echo [OK] requests已安装
+    echo [OK] requests 库已安装
 )
 
 echo.
-echo [OK] Python依赖检查完成，继续启动服务...
-timeout /t 2 >nul
+echo [SUCCESS] 所有依赖检查完成！
 
 echo.
 echo ========================================================
-echo                    🚀 服务启动中
+echo                    启动微信服务
 echo ========================================================
 echo.
-echo [INFO] 服务地址: http://localhost:3000
-echo [INFO] 在N8N中配置此地址以使用个人微信功能
-echo [INFO] 健康检查: http://localhost:3000/health
+echo 服务地址: http://localhost:3000
+echo 健康检查: http://localhost:3000/health
+echo API 文档: 请查看项目 README.md
+echo.
+echo 在 N8N 中配置个人微信服务地址为: http://localhost:3000
 echo.
 echo ========================================================
-echo           按 Ctrl+C 停止服务
+echo           按 Ctrl+C 可随时停止服务
 echo ========================================================
-echo.
-echo [DEBUG] 启动命令: node index.js
-echo [DEBUG] 如果服务无法启动，请检查：
-echo [DEBUG]   1. Node.js和Python是否正确安装
-echo [DEBUG]   2. 端口3000是否被占用
-echo [DEBUG]   3. index.js文件是否存在
 echo.
 
-REM Start service
-node index.js
-if errorlevel 1 (
+REM 最终检查
+echo [INFO] 启动服务前最终检查...
+if not exist "index.js" (
+    echo [ERROR] 关键文件 index.js 丢失！
+    echo [ERROR] 请重新下载完整的项目文件
     echo.
-    echo [ERROR] 服务启动失败！
-    echo [DEBUG] 请检查上方的错误信息
-    echo [DEBUG] 常见问题：
-    echo [DEBUG]   - 端口3000已被占用
-    echo [DEBUG]   - Node.js环境异常
-    echo [DEBUG]   - 缺少必要文件
-    echo [INFO] 5秒后退出...
-    timeout /t 5 >nul
+    echo 按任意键退出...
+    pause >nul
     exit /b 1
 )
 
+echo [INFO] 正在启动西羊石AI微信自动化服务...
+echo [DEBUG] 执行命令: node index.js
 echo.
-echo [INFO] 服务已停止
-echo [INFO] 感谢使用西羊石AI个人微信自动化服务！
-echo [INFO] 官网: https://xysaiai.cn
+
+REM 启动服务
+node index.js
+
+REM 服务停止后的处理
+echo.
+echo [INFO] 微信自动化服务已停止
+echo [INFO] 感谢使用西羊石AI微信插件！
+echo.
+echo 如需技术支持:
+echo   - 官网: https://xysaiai.cn
+echo   - 公众号: 西羊石AI视频
+echo.
+echo 按任意键退出...
+pause >nul
