@@ -13,6 +13,7 @@ import requests
 import json
 import base64
 import time
+import sys
 from datetime import datetime
 
 API_BASE_URL = "http://localhost:3000"
@@ -20,7 +21,7 @@ API_KEY = "test_api_key_12345"  # 测试用API Key
 
 def test_service_health():
     """测试服务健康状态"""
-    print("🏥 测试服务健康状态...")
+    print("[HEALTH] 测试服务健康状态...")
     
     try:
         response = requests.get(f"{API_BASE_URL}/health", timeout=10)

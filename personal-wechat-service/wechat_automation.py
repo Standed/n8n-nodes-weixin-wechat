@@ -419,6 +419,28 @@ def check_wechat_status():
             'timestamp': datetime.now().isoformat()
         }
 
+def load_data_from_args():
+    """从命令行参数或临时文件加载数据"""
+    # 检查是否使用临时文件
+    if len(sys.argv) >= 4 and sys.argv[2] == '--temp-file':
+        temp_file_path = sys.argv[3]
+        log(f"从临时文件加载数据: {temp_file_path}")
+        try:
+            with open(temp_file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            # 删除临时文件
+            os.remove(temp_file_path)
+            log(f"临时文件已清理: {temp_file_path}")
+            return data
+        except Exception as e:
+            log(f"读取临时文件失败: {str(e)}")
+            raise Exception(f"读取临时文件失败: {str(e)}")
+    else:
+        # 传统方式：从命令行参数直接读取
+        if len(sys.argv) < 3:
+            raise Exception('缺少数据参数')
+        return json.loads(sys.argv[2])
+
 def main():
     """主函数 - 处理命令行参数"""
     if len(sys.argv) < 2:
@@ -432,11 +454,7 @@ def main():
     
     try:
         if action == 'send_text':
-            if len(sys.argv) < 3:
-                print(json.dumps({'error': '缺少消息数据'}))
-                return
-                
-            data = json.loads(sys.argv[2])
+            data = load_data_from_args()
             result = send_text_message(
                 data.get('text'),
                 data.get('toType'),
@@ -446,11 +464,7 @@ def main():
             print(json.dumps(result, ensure_ascii=False))
             
         elif action == 'send_file':
-            if len(sys.argv) < 3:
-                print(json.dumps({'error': '缺少文件数据'}))
-                return
-                
-            data = json.loads(sys.argv[2])
+            data = load_data_from_args()
             result = send_file_message(
                 data.get('url'),
                 data.get('filename'),

@@ -12,6 +12,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const { spawn, exec } = require('child_process');
 const { promisify } = require('util');
 
@@ -36,13 +37,30 @@ const pythonScriptPath = path.join(__dirname, 'wechat_automation.py');
 
 // 调用Python脚本
 async function callPythonScript(action, data = null) {
+    let tempFile = null;
+    
     try {
         const args = [pythonScriptPath, action];
+        
+        // 智能判断数据大小，大数据通过临时文件传递
         if (data) {
-            args.push(JSON.stringify(data));
+            const dataStr = JSON.stringify(data);
+            const isLargeData = dataStr.length > 4000; // 4KB阈值，远低于8191字符限制
+            
+            if (isLargeData) {
+                // 大数据通过临时文件传递
+                tempFile = path.join(os.tmpdir(), `wechat_data_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.json`);
+                fs.writeFileSync(tempFile, dataStr, 'utf8');
+                args.push('--temp-file', tempFile);
+                log(`🐍 调用Python脚本: ${action} (大数据通过临时文件: ${path.basename(tempFile)})`);
+            } else {
+                // 小数据直接传递
+                args.push(dataStr);
+                log(`🐍 调用Python脚本: ${action} (小数据直接传递)`);
+            }
+        } else {
+            log(`🐍 调用Python脚本: ${action}`);
         }
-
-        log(`🐍 调用Python脚本: ${action}`);
         
         return new Promise((resolve, reject) => {
             const pythonProcess = spawn('python', args);
@@ -58,6 +76,16 @@ async function callPythonScript(action, data = null) {
             });
 
             pythonProcess.on('close', (code) => {
+                // 清理临时文件
+                if (tempFile) {
+                    try {
+                        fs.unlinkSync(tempFile);
+                        log(`🧹 清理临时文件: ${path.basename(tempFile)}`);
+                    } catch (cleanError) {
+                        log(`⚠️ 清理临时文件失败: ${cleanError.message}`);
+                    }
+                }
+                
                 if (code === 0) {
                     try {
                         // 尝试直接解析JSON
@@ -95,6 +123,15 @@ async function callPythonScript(action, data = null) {
             });
 
             pythonProcess.on('error', (error) => {
+                // 出错时也要清理临时文件
+                if (tempFile) {
+                    try {
+                        fs.unlinkSync(tempFile);
+                    } catch (cleanError) {
+                        // 忽略清理错误
+                    }
+                }
+                
                 log(`❌ 启动Python进程失败: ${error.message}`);
                 resolve({
                     success: false,
@@ -105,6 +142,15 @@ async function callPythonScript(action, data = null) {
         });
 
     } catch (error) {
+        // 异常时也要清理临时文件
+        if (tempFile) {
+            try {
+                fs.unlinkSync(tempFile);
+            } catch (cleanError) {
+                // 忽略清理错误
+            }
+        }
+        
         log(`❌ 调用Python脚本异常: ${error.message}`);
         return {
             success: false,
