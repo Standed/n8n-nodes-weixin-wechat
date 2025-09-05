@@ -82,9 +82,24 @@
       "Bash(tree:*)",
       "Bash(__NEW_LINE__ rm -rf personal-wechat-service/ unified-message-service/)",
       "Bash(__NEW_LINE__ echo \"✅ 服务目录已清理 (这些应该独立分发，不属于N8N插件)\")",
-      "Bash(copy iconswechat.svg distnodeswechat.svg)"
+      "Bash(copy iconswechat.svg distnodeswechat.svg)",
+      "Bash(git merge:*)",
+      "WebFetch(domain:developers.cloudflare.com)",
+      "Read(E:\\N8N\\Docker\\cc\\study/**)",
+      "Read(E:\\N8N\\Docker\\cc\\study/**)",
+      "Bash(claude:*)",
+      "Read(E:\\N8N\\Docker\\cc\\study/**)",
+      "WebFetch(domain:xysaiai.cn)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(tasklist:*)",
+      "Bash(wmic process:*)",
+      "Bash(echo:*)",
+      "WebFetch(domain:storage.googleapis.com)",
+      "Bash(npm version:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
-  }
+  },
+  "outputStyle": "default"
 }
