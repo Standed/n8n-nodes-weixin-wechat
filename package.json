@@ -25,7 +25,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc && npm run copy-icons",
-    "copy-icons": "cp icons/wechat.svg dist/nodes/wechat.svg && cp icons/wechat.svg dist/credentials/wechat.svg",
+    "copy-icons": "cp icons/wechat.png dist/nodes/wechat.png && cp icons/wechat.png dist/credentials/wechat.png",
     "lint": "eslint . --ext .ts",
     "lintfix": "eslint . --ext .ts --fix",
     "dev": "tsc --watch",

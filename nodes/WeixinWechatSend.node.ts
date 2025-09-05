@@ -473,7 +473,7 @@ export class WeixinWechatSend implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'WeChat Send (西羊石AI)',
 		name: 'weixinWechatSend',
-		icon: 'file:wechat.svg',
+		icon: 'file:wechat.png',
 		group: ['communication'],
 		version: 1,
 		description: '西羊石AI微信插件 - 企业微信机器人、个人微信自动化 | 关注公众号"西羊石AI视频"获取API',
