@@ -730,6 +730,119 @@ export class WeixinWechatSend implements INodeType {
 				},
 				description: '支持Markdown格式的富文本内容',
 			},
+			// 企业微信图片消息配置
+			{
+				displayName: '图片URL',
+				name: 'enterpriseImageUrl',
+				type: 'string',
+				default: '',
+				required: true,
+				displayOptions: {
+					show: {
+						service: ['enterprise-wechat-bot'],
+						enterpriseMessageType: ['image'],
+					},
+				},
+				description: '要发送的图片URL地址',
+				placeholder: 'https://example.com/image.jpg',
+			},
+			// 企业微信文件消息配置
+			{
+				displayName: '文件URL',
+				name: 'enterpriseFileUrl',
+				type: 'string',
+				default: '',
+				required: true,
+				displayOptions: {
+					show: {
+						service: ['enterprise-wechat-bot'],
+						enterpriseMessageType: ['file'],
+					},
+				},
+				description: '要发送的文件URL地址',
+				placeholder: 'https://example.com/document.pdf',
+			},
+			{
+				displayName: '文件名',
+				name: 'enterpriseFileName',
+				type: 'string',
+				default: '',
+				displayOptions: {
+					show: {
+						service: ['enterprise-wechat-bot'],
+						enterpriseMessageType: ['file'],
+					},
+				},
+				description: '自定义文件名（可选，将自动从URL提取）',
+				placeholder: 'document.pdf',
+			},
+			// 企业微信图文消息配置
+			{
+				displayName: '图文消息',
+				name: 'enterpriseNews',
+				type: 'fixedCollection',
+				typeOptions: {
+					multipleValues: true,
+				},
+				default: {
+					articles: [
+						{
+							title: '标题',
+							description: '描述',
+							url: 'https://example.com',
+							picurl: 'https://example.com/image.jpg'
+						}
+					]
+				},
+				displayOptions: {
+					show: {
+						service: ['enterprise-wechat-bot'],
+						enterpriseMessageType: ['news'],
+					},
+				},
+				options: [
+					{
+						name: 'articles',
+						displayName: '图文项目',
+						values: [
+							{
+								displayName: '标题',
+								name: 'title',
+								type: 'string',
+								default: '',
+								required: true,
+								description: '图文消息的标题',
+							},
+							{
+								displayName: '描述',
+								name: 'description',
+								type: 'string',
+								typeOptions: {
+									rows: 3,
+								},
+								default: '',
+								description: '图文消息的描述（可选）',
+							},
+							{
+								displayName: '链接URL',
+								name: 'url',
+								type: 'string',
+								default: '',
+								required: true,
+								description: '点击图文消息后跳转的URL',
+							},
+							{
+								displayName: '图片URL',
+								name: 'picurl',
+								type: 'string',
+								default: '',
+								description: '图文消息的图片URL（可选）',
+							},
+						],
+					},
+				],
+				description: '企业微信图文消息内容，最多8个图文项',
+			},
 			// 个人微信消息内容配置
 			{
 				displayName: 'Message Text',
@@ -859,25 +972,128 @@ export class WeixinWechatSend implements INodeType {
 					const messageType = this.getNodeParameter('enterpriseMessageType', i) as string;
 					const webhook = this.getNodeParameter('enterpriseWebhook', i) as string;
 
-					let messageContent: string;
-					if (messageType === 'markdown') {
-						messageContent = this.getNodeParameter('enterpriseMarkdown', i) as string;
-					} else {
-						messageContent = this.getNodeParameter('enterpriseText', i) as string;
-					}
-
 					// 构建企业微信标准payload
 					const payload: any = {
 						msgtype: messageType
 					};
 
-					if (messageType === 'markdown') {
+					if (messageType === 'text') {
+						// 文本消息
+						const messageContent = this.getNodeParameter('enterpriseText', i) as string;
+						payload.text = {
+							content: messageContent
+						};
+					} else if (messageType === 'markdown') {
+						// Markdown消息
+						const messageContent = this.getNodeParameter('enterpriseMarkdown', i) as string;
 						payload.markdown = {
 							content: messageContent
 						};
-					} else {
-						payload.text = {
-							content: messageContent
+					} else if (messageType === 'image') {
+						// 图片消息
+						const imageUrl = this.getNodeParameter('enterpriseImageUrl', i) as string;
+
+						try {
+							// 下载图片并转换为base64
+							const imageResponse = await this.helpers.request({
+								method: 'GET',
+								url: imageUrl,
+								encoding: null, // 获取二进制数据
+								timeout: 30000
+							});
+
+							const base64Image = Buffer.from(imageResponse).toString('base64');
+							const crypto = require('crypto');
+							const md5 = crypto.createHash('md5').update(imageResponse).digest('hex');
+
+							payload.image = {
+								base64: base64Image,
+								md5: md5
+							};
+						} catch (error: any) {
+							throw new NodeOperationError(
+								this.getNode(),
+								`图片下载失败: ${error.message}`,
+								{ itemIndex: i }
+							);
+						}
+					} else if (messageType === 'file') {
+						// 文件消息
+						const fileUrl = this.getNodeParameter('enterpriseFileUrl', i) as string;
+						const fileName = this.getNodeParameter('enterpriseFileName', i) as string;
+
+						try {
+							// 从webhook URL提取key
+							const keyMatch = webhook.match(/key=([^&]+)/);
+							if (!keyMatch) {
+								throw new Error('无法从webhook URL提取key参数');
+							}
+							const key = keyMatch[1];
+
+							// 下载文件
+							const fileResponse = await this.helpers.request({
+								method: 'GET',
+								url: fileUrl,
+								encoding: null, // 获取二进制数据
+								timeout: 120000 // 2分钟超时
+							});
+
+							// 生成文件名
+							const finalFileName = fileName || extractFileNameFromUrl(fileUrl);
+
+							// 创建表单数据上传文件
+							const FormData = require('form-data');
+							const formData = new FormData();
+							formData.append('media', Buffer.from(fileResponse), {
+								filename: finalFileName,
+								contentType: 'application/octet-stream'
+							});
+
+							// 上传文件到企业微信获取media_id
+							const uploadUrl = `https://qyapi.weixin.qq.com/cgi-bin/webhook/upload_media?key=${key}&type=file`;
+							const uploadResponse = await this.helpers.request({
+								method: 'POST',
+								url: uploadUrl,
+								body: formData,
+								timeout: 120000
+							});
+
+							if (uploadResponse.errcode === 0) {
+								payload.file = {
+									media_id: uploadResponse.media_id
+								};
+							} else {
+								throw new Error(`文件上传失败: ${uploadResponse.errmsg}`);
+							}
+						} catch (error: any) {
+							throw new NodeOperationError(
+								this.getNode(),
+								`文件处理失败: ${error.message}`,
+								{ itemIndex: i }
+							);
+						}
+					} else if (messageType === 'news') {
+						// 图文消息
+						const newsData = this.getNodeParameter('enterpriseNews', i) as any;
+
+						if (!newsData.articles || !Array.isArray(newsData.articles) || newsData.articles.length === 0) {
+							throw new NodeOperationError(
+								this.getNode(),
+								'图文消息至少需要一个图文项',
+								{ itemIndex: i }
+							);
+						}
+
+						// 限制最多8个图文项
+						const articles = newsData.articles.slice(0, 8).map((article: any) => ({
+							title: article.title || '标题',
+							description: article.description || '',
+							url: article.url || 'https://example.com',
+							picurl: article.picurl || ''
+						}));
+
+						payload.news = {
+							articles: articles
 						};
 					}
 
@@ -890,9 +1106,17 @@ export class WeixinWechatSend implements INodeType {
 					});
 
 					// 格式化返回结果保持一致性
+					const messageTypeNames: { [key: string]: string } = {
+						'text': '文本',
+						'markdown': 'Markdown',
+						'image': '图片',
+						'file': '文件',
+						'news': '图文'
+					};
+
 					response = {
 						success: true,
-						message: `企业微信${messageType === 'markdown' ? 'Markdown' : '文本'}消息发送成功`,
+						message: `企业微信${messageTypeNames[messageType] || messageType}消息发送成功`,
 						messageType: messageType,
 						webhook_response: response
 					};

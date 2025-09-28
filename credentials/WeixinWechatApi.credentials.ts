@@ -21,19 +21,19 @@ export class WeixinWechatApi implements ICredentialType {
 			description: '🔑 获取步骤：①关注公众号"西羊石AI视频" ②发送"API" ③复制密钥到此处 | 必须获取才能使用个人微信功能！',
 		},
 		{
-			displayName: '个人微信服务地址 (可选)',
+			displayName: '个人微信服务地址',
 			name: 'serviceUrl',
 			type: 'string',
-			default: 'http://localhost:3000',
-			placeholder: 'http://localhost:3000',
+			default: 'http://host.docker.internal:3000',
+			placeholder: 'http://host.docker.internal:3000',
 			required: false,
-			description: '📱 仅个人微信功能需要此配置 | 本地: http://localhost:3000 | Docker: http://host.docker.internal:3000 | 云端: http://您的IP:3000 | 🏢 企业微信用户可跳过',
+			description: '📱 根据N8N部署方式选择：本地安装=http://127.0.0.1:3000 | Docker=http://host.docker.internal:3000 | 云端=内网穿透地址 | 企业微信用户可忽略',
 		},
 	];
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: '={{$credentials.serviceUrl || "http://localhost:3000"}}',
+			baseURL: '={{$credentials.serviceUrl || "http://host.docker.internal:3000"}}',
 			url: '/health',
 			method: 'GET',
 		},
